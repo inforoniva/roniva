@@ -16,55 +16,81 @@
       font-family:system-ui, -apple-system, Arial, sans-serif;
       color:#f1f5f9;
       text-align:center;
-
-      /* 🔽 Arkaplan tam ekran */
       background: url('roniva.jpg') no-repeat center center fixed;
       background-size: cover;
     }
 
-    /* Ortadaki kutu */
     .overlay{
       background: rgba(0,0,0,0.55);
       padding: 32px 24px;
       border-radius: 18px;
       max-width: 720px;
       width: 100%;
-      margin-top: 500px;   /* İstersen burayı artırıp/azaltabilirsin */
+      margin-top: 500px;
     }
 
-    h1{ margin:0 0 10px; }
-    p{ margin:0; opacity:.95; }
-
-    /* Başlık + kum saati hizalama */
     .title{
       display:inline-flex;
       align-items:center;
-      gap:10px;
+      gap:16px;
     }
 
-    /* Kum saati animasyonu */
-    .hourglass{
-      font-size: 26px;
-      animation: flip 2s linear infinite;
+    /* Kum saati kapsayıcı */
+    .glass{
+      width:32px;
+      height:48px;
     }
 
-    @keyframes flip{
-      0%   { transform: rotate(0deg); }
-      50%  { transform: rotate(180deg); }
-      100% { transform: rotate(360deg); }
+    /* Kum animasyonu */
+    .sand-top{
+      animation: sandTop 3s linear infinite;
+      transform-origin: center;
     }
 
-    /* GitHub Pages footer (varsa) gizle */
-    footer{
-      display:none;
+    .sand-bottom{
+      animation: sandBottom 3s linear infinite;
+      transform-origin: center;
     }
+
+    @keyframes sandTop{
+      0%{ opacity:1; }
+      45%{ opacity:.1; }
+      50%{ opacity:0; }
+      100%{ opacity:0; }
+    }
+
+    @keyframes sandBottom{
+      0%{ opacity:0; }
+      45%{ opacity:0; }
+      50%{ opacity:.4; }
+      100%{ opacity:1; }
+    }
+
+    footer{ display:none; }
   </style>
 </head>
 <body>
 
   <div class="overlay">
     <h1 class="title">
-      <span class="hourglass">⏳</span>
+
+      <!-- ŞEFFAF KUM SAATİ (SVG) -->
+      <svg class="glass" viewBox="0 0 60 100">
+        <!-- Cam -->
+        <path d="M10 5 H50 L45 35 L50 65 H10 L15 35 Z"
+              fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.25)" stroke-width="2"/>
+
+        <!-- ÜST KUM -->
+        <polygon class="sand-top"
+          points="15,15 45,15 30,30"
+          fill="rgba(255,215,0,.7)"/>
+
+        <!-- ALT KUM -->
+        <polygon class="sand-bottom"
+          points="15,80 45,80 30,65"
+          fill="rgba(255,215,0,.85)"/>
+      </svg>
+
       Website im Aufbau
     </h1>
 
