@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root{
-      /* 👇 Saat boyutu ve yazıyla arasındaki mesafe – istediğin gibi değiştir */
-      --clock-font-size: 28px;   /* dijital saatin yazı boyutu */
-      --clock-padding: 8px 14px; /* saatin iç boşluğu */
-      --title-gap: 60px;         /* saat ile yazı arası mesafe */
+      /* Dijital saatin kontrol ayarları */
+      --clock-font-size: 28px;      /* saat yazı boyutu */
+      --clock-padding: 8px 14px;    /* saat iç boşluğu */
+      --clock-left: 18%;            /* saatin soldan uzaklığı (yatay konum) */
     }
 
     * { box-sizing: border-box; }
@@ -28,22 +28,31 @@
     }
 
     .overlay{
+      position: relative;            /* ⬅ saat için referans */
       background: rgba(0,0,0,0.55);
       padding: 32px 24px;
       border-radius: 18px;
       max-width: 720px;
       width: 100%;
-      margin-top: 500px;   /* yazının dikey konumu – istersen değiştir */
+      margin-top: 500px;            /* kutunun dikey konumu */
     }
 
-    .title{
-      display:inline-flex;
-      align-items:center;
-      gap: var(--title-gap);
+    h1{
+      margin:0 0 10px;
     }
 
-    h1{ margin:0 0 10px; }
-    p{ margin:0; opacity:.95; }
+    p{
+      margin:0;
+      opacity:.95;
+    }
+
+    /* Dijital saatin kutu içindeki konumu */
+    .clock-wrapper{
+      position:absolute;
+      top:50%;                       /* yükseklik: ortala */
+      left:var(--clock-left);        /* yatay: sen ayarla */
+      transform:translateY(-50%);    /* tam ortalamak için */
+    }
 
     /* 🔴 Dijital saat stili (kırmızı LED) */
     .digital-clock{
@@ -71,13 +80,13 @@
 <body>
 
   <div class="overlay">
-    <h1 class="title">
-      <!-- KIRMIZI DİJİTAL SAAT -->
+    <!-- Saat: metinden bağımsız, kutu içinde serbest -->
+    <div class="clock-wrapper">
       <span class="digital-clock" id="digital-clock">88:88:88</span>
+    </div>
 
-      Website im Aufbau
-    </h1>
-
+    <!-- Metin kutu ortasında kalır -->
+    <h1>Website im Aufbau</h1>
     <p>Wir arbeiten daran.</p>
   </div>
 
