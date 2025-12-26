@@ -29,13 +29,30 @@
       border-radius: 18px;
       max-width: 720px;
       width: 100%;
-
-      /* 👇 Yazıyı aşağı kaydırır */
-      margin-top: 500px;
+      margin-top: 500px;   /* İstersen burayı artırıp/azaltabilirsin */
     }
 
     h1{ margin:0 0 10px; }
     p{ margin:0; opacity:.95; }
+
+    /* Başlık + kum saati hizalama */
+    .title{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    /* Kum saati animasyonu */
+    .hourglass{
+      font-size: 26px;
+      animation: flip 2s linear infinite;
+    }
+
+    @keyframes flip{
+      0%   { transform: rotate(0deg); }
+      50%  { transform: rotate(180deg); }
+      100% { transform: rotate(360deg); }
+    }
 
     /* GitHub Pages footer (varsa) gizle */
     footer{
@@ -46,7 +63,11 @@
 <body>
 
   <div class="overlay">
-    <h1>Website im Aufbau</h1>
+    <h1 class="title">
+      <span class="hourglass">⏳</span>
+      Website im Aufbau
+    </h1>
+
     <p>Wir arbeiten daran.</p>
   </div>
 
