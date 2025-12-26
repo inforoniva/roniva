@@ -6,39 +6,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; }
+
     body{
       margin:0;
       min-height:100vh;
       display:flex;
-      flex-direction:column;
       justify-content:center;
       align-items:center;
       font-family:system-ui, -apple-system, Arial, sans-serif;
-      background:#0b1220;
       color:#f1f5f9;
       text-align:center;
+
+      /* 🔽 Arkaplanı tam ekran yapıyoruz */
+      background: url('roniva.jpg') no-repeat center center fixed;
+      background-size: cover;
     }
-    .wrapper{
-      max-width:900px;
-      width:100%;
-      padding:24px;
+
+    /* Ortadaki kutu (yazılar için hafif karartma) */
+    .overlay{
+      background: rgba(0,0,0,0.55);
+      padding: 32px 24px;
+      border-radius: 18px;
+      max-width: 720px;
+      width: 100%;
     }
-    img{
-      max-width:100%;
-      border-radius:16px;
-      display:block;
-      margin:0 auto 24px;
+
+    h1{ margin:0 0 10px; }
+    p{ margin:0; opacity:.95; }
+
+    /* GitHub Pages footer’ı gizle (varsa) */
+    footer{
+      display:none;
     }
-    h1{ margin:0 0 8px; }
-    p{ margin:0; opacity:.9; }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <!-- BURADA RESIM ADINI DEGISTIRECEGIZ -->
-    <img src="roniva.jpg" alt="Coming soon">
+
+  <div class="overlay">
     <h1>Website im Aufbau</h1>
     <p>Wir arbeiten daran.</p>
   </div>
+
 </body>
 </html>
