@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root{
-      /* 👇 Bunlarla oynayarak kontrol sende */
-      --clock-size: 48px;     /* saat boyutu */
-      --title-gap: 22px;      /* saat ile yazı arası */
+      /* 👇 Bunlarla oynayıp kontrol sende */
+      --clock-size: 70px;   /* saatin boyutu */
+      --title-gap: 22px;    /* saat ile yazı arası mesafe */
     }
 
     * { box-sizing: border-box; }
@@ -32,7 +32,7 @@
       border-radius: 18px;
       max-width: 720px;
       width: 100%;
-      margin-top: 500px;
+      margin-top: 500px;       /* yazının yükseklik ayarı */
     }
 
     .title{
@@ -44,88 +44,10 @@
     h1{ margin:0 0 10px; }
     p{ margin:0; opacity:.95; }
 
-    /* ——— ANALOG SAAT ——— */
+    /* Analog saat SVG için */
     .clock{
       width: var(--clock-size);
       height: var(--clock-size);
-      border-radius:50%;
-      position:relative;
-
-      /* dış çerçeve */
-      background:#0b0f17;
-      border:3px solid rgba(255,255,255,.9);
-      box-shadow:
-        inset 0 0 8px rgba(0,0,0,.8),
-        0 6px 10px rgba(0,0,0,.5);
-
-      /* cam parlama efekti */
-      overflow:hidden;
-    }
-
-    /* kadran cam parlaması */
-    .clock::before{
-      content:"";
-      position:absolute;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      background:linear-gradient(135deg,
-        rgba(255,255,255,.12) 0%,
-        rgba(255,255,255,0) 40%,
-        rgba(255,255,255,.12) 95%
-      );
-      pointer-events:none;
-    }
-
-    /* işaretler (12 adet) */
-    .tick{
-      position:absolute;
-      left:50%;
-      top:50%;
-      width:2px;
-      height:18%;
-      background:rgba(255,255,255,.85);
-      transform-origin:50% 90%;
-    }
-
-    /* akrep/yelkovan/saniye */
-    .hand{
-      position:absolute;
-      left:50%;
-      top:50%;
-      transform-origin:50% 100%;
-      transform: translate(-50%, -100%) rotate(0deg);
-      border-radius:2px;
-    }
-
-    .hour{
-      width:4px;
-      height:28%;
-      background:rgba(255,255,255,.95);
-    }
-
-    .minute{
-      width:3px;
-      height:38%;
-      background:rgba(255,255,255,.9);
-    }
-
-    .second{
-      width:2px;
-      height:42%;
-      background:#ff6a00;
-    }
-
-    .center{
-      position:absolute;
-      width:7px;
-      height:7px;
-      border-radius:50%;
-      background:#ff6a00;
-      left:50%;
-      top:50%;
-      transform:translate(-50%, -50%);
     }
 
     footer{ display:none; }
@@ -135,14 +57,55 @@
 
   <div class="overlay">
     <h1 class="title">
-      <!-- Analog saat -->
-      <div class="clock" id="clock">
-        <!-- 12 adet işaret oluşturacağız (JS ekliyor) -->
-        <div class="hand hour"></div>
-        <div class="hand minute"></div>
-        <div class="hand second"></div>
-        <div class="center"></div>
-      </div>
+      <!-- GERÇEK ZAMANLI ANALOG SAAT (SVG) -->
+      <svg class="clock" viewBox="0 0 200 200">
+        <!-- dış çerçeve (arka plan şeffaf, sadece beyaz çizgi) -->
+        <circle cx="100" cy="100" r="95"
+                fill="none"
+                stroke="white"
+                stroke-width="4" />
+
+        <!-- dakika işaretleri -->
+        <g id="ticks">
+          <!-- 60 çizgi, JS ile döndüreceğiz -->
+          <!-- template çizgi -->
+          <rect x="98.5" y="8" width="3" height="10" rx="1.5"
+                fill="white" class="tick-template" />
+        </g>
+
+        <!-- rakamlar -->
+        <g id="numbers" font-family="system-ui, sans-serif"
+           font-size="16" fill="white" text-anchor="middle" dominant-baseline="central">
+          <text x="100" y="30">12</text>
+          <text x="140" y="42">1</text>
+          <text x="168" y="70">2</text>
+          <text x="180" y="110">3</text>
+          <text x="168" y="150">4</text>
+          <text x="140" y="178">5</text>
+          <text x="100" y="190">6</text>
+          <text x="60"  y="178">7</text>
+          <text x="32"  y="150">8</text>
+          <text x="20"  y="110">9</text>
+          <text x="32"  y="70">10</text>
+          <text x="60"  y="42">11</text>
+        </g>
+
+        <!-- akrep, yelkovan, saniye -->
+        <g id="hands" stroke-linecap="round">
+          <!-- akrep (hour) -->
+          <line id="hour-hand" x1="100" y1="100" x2="100" y2="55"
+                stroke="white" stroke-width="5" />
+          <!-- yelkovan (minute) -->
+          <line id="minute-hand" x1="100" y1="100" x2="100" y2="35"
+                stroke="white" stroke-width="3" />
+          <!-- saniye (second) -->
+          <line id="second-hand" x1="100" y1="105" x2="100" y2="25"
+                stroke="#ff3333" stroke-width="2" />
+        </g>
+
+        <!-- orta nokta -->
+        <circle cx="100" cy="100" r="4" fill="#ff3333" />
+      </svg>
 
       Website im Aufbau
     </h1>
@@ -151,32 +114,44 @@
   </div>
 
   <script>
-    // işaretleri oluştur
-    const clock = document.getElementById("clock");
-    for(let i=0;i<12;i++){
-      const t = document.createElement("div");
-      t.className = "tick";
-      t.style.transform = `translate(-50%, -100%) rotate(${i*30}deg)`;
-      clock.appendChild(t);
-    }
+    // dakika işaretlerini çoğalt
+    (function createTicks(){
+      const group = document.getElementById('ticks');
+      const template = group.querySelector('.tick-template');
+      for(let i = 0; i < 60; i++){
+        const tick = template.cloneNode(true);
+        const angle = i * 6; // 360 / 60
+        tick.setAttribute('transform', `rotate(${angle} 100 100)`);
+        // 5 dakikalık (12 adet) işaretleri biraz daha uzun yap
+        if(i % 5 === 0){
+          tick.setAttribute('y', '5');
+          tick.setAttribute('height', '15');
+        }
+        group.appendChild(tick);
+      }
+      template.remove(); // ilk template'i kaldır
+    })();
 
     function updateClock(){
       const now = new Date();
-      const s = now.getSeconds() + now.getMilliseconds()/1000;
-      const m = now.getMinutes() + s/60;
-      const h = (now.getHours()%12) + m/60;
+      const sec = now.getSeconds() + now.getMilliseconds() / 1000;
+      const min = now.getMinutes() + sec / 60;
+      const hr  = (now.getHours() % 12) + min / 60;
 
-      document.querySelector('.second').style.transform =
-        `translate(-50%, -100%) rotate(${s*6}deg)`;
+      const secAngle = sec * 6;    // 360 / 60
+      const minAngle = min * 6;
+      const hrAngle  = hr  * 30;   // 360 / 12
 
-      document.querySelector('.minute').style.transform =
-        `translate(-50%, -100%) rotate(${m*6}deg)`;
-
-      document.querySelector('.hour').style.transform =
-        `translate(-50%, -100%) rotate(${h*30}deg)`;
+      document.getElementById('second-hand')
+        .setAttribute('transform', `rotate(${secAngle} 100 100)`);
+      document.getElementById('minute-hand')
+        .setAttribute('transform', `rotate(${minAngle} 100 100)`);
+      document.getElementById('hour-hand')
+        .setAttribute('transform', `rotate(${hrAngle} 100 100)`);
     }
 
-    setInterval(updateClock, 60);
+    // akıcı saniye için sık güncelle
+    setInterval(updateClock, 80);
     updateClock();
   </script>
 
