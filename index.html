@@ -26,7 +26,7 @@
       border-radius: 18px;
       max-width: 720px;
       width: 100%;
-      margin-top: 500px;
+      margin-top: 500px;  /* Yazının dikey konumu */
     }
 
     .title{
@@ -35,67 +35,104 @@
       gap:16px;
     }
 
-    /* Kum saati kapsayıcı */
-    .glass{
-      width:32px;
-      height:48px;
+    h1{ margin:0 0 10px; }
+    p{ margin:0; opacity:.95; }
+
+    /* Analog saat */
+    .clock{
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,0.9);
+      position:relative;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(0,0,0,0.4));
+      box-shadow:0 0 6px rgba(0,0,0,0.6);
     }
 
-    /* Kum animasyonu */
-    .sand-top{
-      animation: sandTop 3s linear infinite;
-      transform-origin: center;
+    .clock .hand{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform-origin:50% 100%;
+      transform: translate(-50%, -100%) rotate(0deg);
+      border-radius:2px;
     }
 
-    .sand-bottom{
-      animation: sandBottom 3s linear infinite;
-      transform-origin: center;
+    .clock .hour{
+      width:4px;
+      height:14px;
+      background:rgba(255,255,255,0.95);
     }
 
-    @keyframes sandTop{
-      0%{ opacity:1; }
-      45%{ opacity:.1; }
-      50%{ opacity:0; }
-      100%{ opacity:0; }
+    .clock .minute{
+      width:3px;
+      height:18px;
+      background:rgba(255,255,255,0.9);
     }
 
-    @keyframes sandBottom{
-      0%{ opacity:0; }
-      45%{ opacity:0; }
-      50%{ opacity:.4; }
-      100%{ opacity:1; }
+    .clock .second{
+      width:2px;
+      height:20px;
+      background:#f97316;
     }
 
-    footer{ display:none; }
+    .clock .center{
+      position:absolute;
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:#f97316;
+      left:50%;
+      top:50%;
+      transform:translate(-50%, -50%);
+    }
+
+    footer{
+      display:none;
+    }
   </style>
 </head>
 <body>
 
   <div class="overlay">
     <h1 class="title">
-
-      <!-- ŞEFFAF KUM SAATİ (SVG) -->
-      <svg class="glass" viewBox="0 0 60 100">
-        <!-- Cam -->
-        <path d="M10 5 H50 L45 35 L50 65 H10 L15 35 Z"
-              fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.25)" stroke-width="2"/>
-
-        <!-- ÜST KUM -->
-        <polygon class="sand-top"
-          points="15,15 45,15 30,30"
-          fill="rgba(255,215,0,.7)"/>
-
-        <!-- ALT KUM -->
-        <polygon class="sand-bottom"
-          points="15,80 45,80 30,65"
-          fill="rgba(255,215,0,.85)"/>
-      </svg>
+      <!-- Analog saat -->
+      <div class="clock">
+        <div class="hand hour"></div>
+        <div class="hand minute"></div>
+        <div class="hand second"></div>
+        <div class="center"></div>
+      </div>
 
       Website im Aufbau
     </h1>
 
     <p>Wir arbeiten daran.</p>
   </div>
+
+  <script>
+    function updateClock(){
+      const now = new Date();
+      const seconds = now.getSeconds() + now.getMilliseconds() / 1000;
+      const minutes = now.getMinutes() + seconds / 60;
+      const hours   = (now.getHours() % 12) + minutes / 60;
+
+      const secondDeg = seconds * 6;        // 360 / 60
+      const minuteDeg = minutes * 6;
+      const hourDeg   = hours * 30;         // 360 / 12
+
+      document.querySelector('.clock .second').style.transform =
+        `translate(-50%, -100%) rotate(${secondDeg}deg)`;
+      document.querySelector('.clock .minute').style.transform =
+        `translate(-50%, -100%) rotate(${minuteDeg}deg)`;
+      document.querySelector('.clock .hour').style.transform =
+        `translate(-50%, -100%) rotate(${hourDeg}deg)`;
+    }
+
+    // Daha akıcı hareket için saniyeyi sık güncelle
+    setInterval(updateClock, 100);
+    updateClock();
+  </script>
 
 </body>
 </html>
