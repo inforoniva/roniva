@@ -2,14 +2,25 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <title>Website im Aufbau</title>
+  <title>RONIVA – Website im Aufbau</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Favicon: logonu "roniva-logo.png" adıyla repo'ya yükle -->
+  <link rel="icon" type="image/png" href="roniva-logo.png" />
+
   <style>
     :root{
-      /* Dijital saatin kontrol ayarları */
-      --clock-font-size: 28px;      /* saat yazı boyutu */
-      --clock-padding: 8px 14px;    /* saat iç boşluğu */
-      --clock-offset-x: -300px;      /* 0 = metne yakın, negatif = sola doğru çıkar */
+      /* 🔧 DİJİTAL SAAT AYARLARI */
+      --clock-font-size: 28px;        /* saat yazı boyutu */
+      --clock-padding: 8px 14px;      /* saat iç boşluğu */
+      --clock-offset-x: -80px;        /* 0=kutunun solundan, negatif= daha sola çıkar */
+      --clock-pulse-duration: 2.5s;   /* nefes animasyonu süresi */
+
+      /* 🔧 YAZI / TYPEWRITER AYARLARI (ms) */
+      --type-speed: 90;              /* harf yazma hızı (düşük = daha hızlı) */
+      --erase-speed: 60;             /* harf silme hızı */
+      --pause-after-type: 1200;      /* cümle tamamlanınca bekleme */
+      --pause-after-erase: 600;      /* silindikten sonra bekleme */
     }
 
     * { box-sizing: border-box; }
@@ -46,6 +57,19 @@
       opacity:.95;
     }
 
+    .email{
+      margin-top: 10px;
+      font-size: 0.95rem;
+    }
+
+    .email a{
+      color:#ff3030;
+      text-decoration:none;
+    }
+    .email a:hover{
+      text-decoration:underline;
+    }
+
     /* Dijital saatin kutuya göre konumu */
     .clock-wrapper{
       position:absolute;
@@ -54,7 +78,7 @@
       left: var(--clock-offset-x);    /* sola/sağa kaydırma – NEGATİF yapabilirsin */
     }
 
-    /* 🔴 Dijital saat stili (kırmızı LED) */
+    /* 🔴 Dijital saat stili (kırmızı LED + nefes animasyonu) */
     .digital-clock{
       font-family: "Courier New", monospace;
       font-size: var(--clock-font-size);
@@ -67,11 +91,34 @@
       min-width: 115px;
       text-align:center;
       box-shadow:
-        0 0 12px rgba(255, 48, 48, 0.75),
+        0 0 8px rgba(255, 48, 48, 0.65),
         inset 0 0 6px rgba(0,0,0,0.9);
       text-shadow:
         0 0 6px rgba(255, 48, 48, 0.9),
         0 0 14px rgba(255, 48, 48, 0.8);
+
+      animation: clockPulse var(--clock-pulse-duration) ease-in-out infinite;
+    }
+
+    @keyframes clockPulse{
+      0%{
+        box-shadow:
+          0 0 6px rgba(255, 48, 48, 0.5),
+          inset 0 0 4px rgba(0,0,0,0.9);
+        transform: scale(1);
+      }
+      50%{
+        box-shadow:
+          0 0 14px rgba(255, 48, 48, 0.9),
+          inset 0 0 6px rgba(0,0,0,0.9);
+        transform: scale(1.03);
+      }
+      100%{
+        box-shadow:
+          0 0 6px rgba(255, 48, 48, 0.5),
+          inset 0 0 4px rgba(0,0,0,0.9);
+        transform: scale(1);
+      }
     }
 
     footer{ display:none; }
@@ -85,12 +132,18 @@
       <span class="digital-clock" id="digital-clock">88:88:88</span>
     </div>
 
-    <!-- Metin kutunun ortasında kalır -->
-    <h1>Website im Aufbau</h1>
-    <p>Wir arbeiten daran.</p>
+    <!-- Typewriter ile çizilecek metinler -->
+    <h1 id="title-line"></h1>
+    <p id="subtitle-line"></p>
+
+    <!-- E-posta satırı -->
+    <p class="email">
+      <a href="mailto:info.roniva@gmail.com">info.roniva@gmail.com</a>
+    </p>
   </div>
 
   <script>
+    /* ================== DİJİTAL SAAT ================== */
     function pad(n){ return n.toString().padStart(2,"0"); }
 
     function updateDigitalClock(){
@@ -103,6 +156,64 @@
 
     updateDigitalClock();
     setInterval(updateDigitalClock, 1000);
+
+    /* ================== TYPEWRITER METİN ================== */
+
+    const titleText = "Website im Aufbau";
+    const subtitleText = "Wir arbeiten daran"; // noktasız
+
+    const titleEl = document.getElementById("title-line");
+    const subEl   = document.getElementById("subtitle-line");
+
+    // CSS değişkenlerinden hızları oku
+    const rootStyles = getComputedStyle(document.documentElement);
+    const TYPE_SPEED       = parseInt(rootStyles.getPropertyValue("--type-speed"))       || 90;
+    const ERASE_SPEED      = parseInt(rootStyles.getPropertyValue("--erase-speed"))      || 60;
+    const PAUSE_AFTER_TYPE = parseInt(rootStyles.getPropertyValue("--pause-after-type")) || 1200;
+    const PAUSE_AFTER_ERASE= parseInt(rootStyles.getPropertyValue("--pause-after-erase"))|| 600;
+
+    let index = 0;
+    let phase = "typing";  // typing, pauseAfterType, erasing, pauseAfterErase
+    const maxLen = Math.max(titleText.length, subtitleText.length);
+
+    function typeLoop(){
+      if(phase === "typing"){
+        index++;
+        titleEl.textContent = titleText.slice(0, Math.min(index, titleText.length));
+        subEl.textContent   = subtitleText.slice(0, Math.min(index, subtitleText.length));
+
+        if(index >= maxLen){
+          phase = "pauseAfterType";
+          setTimeout(typeLoop, PAUSE_AFTER_TYPE);
+        } else {
+          setTimeout(typeLoop, TYPE_SPEED);
+        }
+
+      } else if(phase === "pauseAfterType"){
+        phase = "erasing";
+        setTimeout(typeLoop, ERASE_SPEED);
+
+      } else if(phase === "erasing"){
+        index--;
+        if(index < 0) index = 0;
+
+        titleEl.textContent = titleText.slice(0, Math.min(index, titleText.length));
+        subEl.textContent   = subtitleText.slice(0, Math.min(index, subtitleText.length));
+
+        if(index === 0){
+          phase = "pauseAfterErase";
+          setTimeout(typeLoop, PAUSE_AFTER_ERASE);
+        } else {
+          setTimeout(typeLoop, ERASE_SPEED);
+        }
+
+      } else if(phase === "pauseAfterErase"){
+        phase = "typing";
+        setTimeout(typeLoop, TYPE_SPEED);
+      }
+    }
+
+    typeLoop();
   </script>
 
 </body>
