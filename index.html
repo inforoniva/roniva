@@ -5,6 +5,12 @@
   <title>Website im Aufbau</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root{
+      /* 👇 Bunlarla oynayarak kontrol sende */
+      --clock-size: 48px;     /* saat boyutu */
+      --title-gap: 22px;      /* saat ile yazı arası */
+    }
+
     * { box-sizing: border-box; }
 
     body{
@@ -26,30 +32,65 @@
       border-radius: 18px;
       max-width: 720px;
       width: 100%;
-      margin-top: 500px;  /* Yazının dikey konumu */
+      margin-top: 500px;
     }
 
     .title{
       display:inline-flex;
       align-items:center;
-      gap:16px;
+      gap: var(--title-gap);
     }
 
     h1{ margin:0 0 10px; }
     p{ margin:0; opacity:.95; }
 
-    /* Analog saat */
+    /* ——— ANALOG SAAT ——— */
     .clock{
-      width:42px;
-      height:42px;
+      width: var(--clock-size);
+      height: var(--clock-size);
       border-radius:50%;
-      border:2px solid rgba(255,255,255,0.9);
       position:relative;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(0,0,0,0.4));
-      box-shadow:0 0 6px rgba(0,0,0,0.6);
+
+      /* dış çerçeve */
+      background:#0b0f17;
+      border:3px solid rgba(255,255,255,.9);
+      box-shadow:
+        inset 0 0 8px rgba(0,0,0,.8),
+        0 6px 10px rgba(0,0,0,.5);
+
+      /* cam parlama efekti */
+      overflow:hidden;
     }
 
-    .clock .hand{
+    /* kadran cam parlaması */
+    .clock::before{
+      content:"";
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:linear-gradient(135deg,
+        rgba(255,255,255,.12) 0%,
+        rgba(255,255,255,0) 40%,
+        rgba(255,255,255,.12) 95%
+      );
+      pointer-events:none;
+    }
+
+    /* işaretler (12 adet) */
+    .tick{
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:2px;
+      height:18%;
+      background:rgba(255,255,255,.85);
+      transform-origin:50% 90%;
+    }
+
+    /* akrep/yelkovan/saniye */
+    .hand{
       position:absolute;
       left:50%;
       top:50%;
@@ -58,38 +99,36 @@
       border-radius:2px;
     }
 
-    .clock .hour{
+    .hour{
       width:4px;
-      height:14px;
-      background:rgba(255,255,255,0.95);
+      height:28%;
+      background:rgba(255,255,255,.95);
     }
 
-    .clock .minute{
+    .minute{
       width:3px;
-      height:18px;
-      background:rgba(255,255,255,0.9);
+      height:38%;
+      background:rgba(255,255,255,.9);
     }
 
-    .clock .second{
+    .second{
       width:2px;
-      height:20px;
-      background:#f97316;
+      height:42%;
+      background:#ff6a00;
     }
 
-    .clock .center{
+    .center{
       position:absolute;
-      width:6px;
-      height:6px;
+      width:7px;
+      height:7px;
       border-radius:50%;
-      background:#f97316;
+      background:#ff6a00;
       left:50%;
       top:50%;
       transform:translate(-50%, -50%);
     }
 
-    footer{
-      display:none;
-    }
+    footer{ display:none; }
   </style>
 </head>
 <body>
@@ -97,7 +136,8 @@
   <div class="overlay">
     <h1 class="title">
       <!-- Analog saat -->
-      <div class="clock">
+      <div class="clock" id="clock">
+        <!-- 12 adet işaret oluşturacağız (JS ekliyor) -->
         <div class="hand hour"></div>
         <div class="hand minute"></div>
         <div class="hand second"></div>
@@ -111,26 +151,32 @@
   </div>
 
   <script>
-    function updateClock(){
-      const now = new Date();
-      const seconds = now.getSeconds() + now.getMilliseconds() / 1000;
-      const minutes = now.getMinutes() + seconds / 60;
-      const hours   = (now.getHours() % 12) + minutes / 60;
-
-      const secondDeg = seconds * 6;        // 360 / 60
-      const minuteDeg = minutes * 6;
-      const hourDeg   = hours * 30;         // 360 / 12
-
-      document.querySelector('.clock .second').style.transform =
-        `translate(-50%, -100%) rotate(${secondDeg}deg)`;
-      document.querySelector('.clock .minute').style.transform =
-        `translate(-50%, -100%) rotate(${minuteDeg}deg)`;
-      document.querySelector('.clock .hour').style.transform =
-        `translate(-50%, -100%) rotate(${hourDeg}deg)`;
+    // işaretleri oluştur
+    const clock = document.getElementById("clock");
+    for(let i=0;i<12;i++){
+      const t = document.createElement("div");
+      t.className = "tick";
+      t.style.transform = `translate(-50%, -100%) rotate(${i*30}deg)`;
+      clock.appendChild(t);
     }
 
-    // Daha akıcı hareket için saniyeyi sık güncelle
-    setInterval(updateClock, 100);
+    function updateClock(){
+      const now = new Date();
+      const s = now.getSeconds() + now.getMilliseconds()/1000;
+      const m = now.getMinutes() + s/60;
+      const h = (now.getHours()%12) + m/60;
+
+      document.querySelector('.second').style.transform =
+        `translate(-50%, -100%) rotate(${s*6}deg)`;
+
+      document.querySelector('.minute').style.transform =
+        `translate(-50%, -100%) rotate(${m*6}deg)`;
+
+      document.querySelector('.hour').style.transform =
+        `translate(-50%, -100%) rotate(${h*30}deg)`;
+    }
+
+    setInterval(updateClock, 60);
     updateClock();
   </script>
 
