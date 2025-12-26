@@ -9,7 +9,7 @@
       /* Dijital saatin kontrol ayarları */
       --clock-font-size: 28px;      /* saat yazı boyutu */
       --clock-padding: 8px 14px;    /* saat iç boşluğu */
-      --clock-left: 10%;            /* saatin soldan uzaklığı (yatay konum) */
+      --clock-offset-x: -80px;      /* 0 = metne yakın, negatif = sola doğru çıkar */
     }
 
     * { box-sizing: border-box; }
@@ -28,7 +28,7 @@
     }
 
     .overlay{
-      position: relative;            /* ⬅ saat için referans */
+      position: relative;            /* saat için referans */
       background: rgba(0,0,0,0.55);
       padding: 32px 24px;
       border-radius: 18px;
@@ -46,12 +46,12 @@
       opacity:.95;
     }
 
-    /* Dijital saatin kutu içindeki konumu */
+    /* Dijital saatin kutuya göre konumu */
     .clock-wrapper{
       position:absolute;
-      top:50%;                       /* yükseklik: ortala */
-      left:var(--clock-left);        /* yatay: sen ayarla */
-      transform:translateY(-50%);    /* tam ortalamak için */
+      top:50%;                        /* yükseklik: ortalı */
+      transform: translateY(-50%);    /* sadece Y ekseni */
+      left: var(--clock-offset-x);    /* sola/sağa kaydırma – NEGATİF yapabilirsin */
     }
 
     /* 🔴 Dijital saat stili (kırmızı LED) */
@@ -80,12 +80,12 @@
 <body>
 
   <div class="overlay">
-    <!-- Saat: metinden bağımsız, kutu içinde serbest -->
+    <!-- Saat: metinden bağımsız -->
     <div class="clock-wrapper">
       <span class="digital-clock" id="digital-clock">88:88:88</span>
     </div>
 
-    <!-- Metin kutu ortasında kalır -->
+    <!-- Metin kutunun ortasında kalır -->
     <h1>Website im Aufbau</h1>
     <p>Wir arbeiten daran.</p>
   </div>
