@@ -5,29 +5,25 @@
   <title>RONIVA – Website im Aufbau</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Favicon: logonu "roniva-logo.png" adıyla repo'ya ekle -->
   <link rel="icon" type="image/png" href="roniva-logo.png" />
 
   <style>
     :root{
-      /* 🔧 OVERLAY (DIŞ KUTU) ÖLÇÜLERİ – TAMAMEN SENDE */
-      --overlay-width: 450px;       /* genişlik */
-      --overlay-height: 100px;      /* yükseklik (SABİT) */
-      --overlay-offset-top: 560px;  /* sayfada yukarıdan uzaklık */
+      --overlay-width: 450px;
+      --overlay-height: 100px;
+      --overlay-offset-top: 560px;
 
-      /* 🔧 DİJİTAL SAAT AYARLARI – TAMAMEN SENDE */
-      --clock-font-size: 28px;      /* saat yazı boyutu */
-      --clock-padding: 8px 14px;    /* saat iç boşluğu */
-      --clock-left: -300px;         /* overlay'e göre soldan pozisyon (px veya %) */
-      --clock-top: 50%;             /* overlay'e göre yukarıdan pozisyon (%) */
-      --clock-pulse-duration: 2.5s; /* nefes animasyonu süresi */
-      --clock-scale-max: 1.05;      /* parlama anında büyüme (1.00 = büyüme yok) */
+      --clock-font-size: 28px;
+      --clock-padding: 8px 14px;
+      --clock-left: -300px;
+      --clock-top: 50%;
+      --clock-pulse-duration: 2.5s;
+      --clock-scale-max: 1.05;
 
-      /* 🔧 TYPEWRITER (YAZI) HIZLARI – milisaniye */
-      --type-speed: 90;             /* harf yazma hızı (küçük = daha hızlı) */
-      --erase-speed: 60;            /* harf silme hızı */
-      --pause-after-type: 1200;     /* cümle yazılınca bekleme */
-      --pause-after-erase: 600;     /* tamamen silindikten sonra bekleme */
+      --type-speed: 90;
+      --erase-speed: 60;
+      --pause-after-type: 1200;
+      --pause-after-erase: 600;
     }
 
     * { box-sizing: border-box; }
@@ -50,20 +46,17 @@
       background: rgba(0,0,0,0.55);
       border-radius: 18px;
       width: var(--overlay-width);
-      height: var(--overlay-height);      /* 🔒 sabit yükseklik */
+      height: var(--overlay-height);
       margin-top: var(--overlay-offset-top);
-
-      /* padding’i küçülttüm ki içerik sığsın */
       padding: 10px 18px;
       display:flex;
       flex-direction:column;
-      justify-content:space-between;      /* üstte yazı bloğu, altta mail */
+      justify-content:space-between;
       align-items:center;
     }
 
-    /* Yazı bloğu için sabit alan – yükseklik değişmez */
     .text-block{
-      height: 55px;                       /* iki satır için alan – küçülttüm */
+      height: 55px;
       display:flex;
       flex-direction:column;
       justify-content:center;
@@ -78,17 +71,14 @@
       width:100%;
     }
 
-    .line-1{
-      height: 32px;   /* başlık satırı yüksekliği */
-    }
+    .line-1{ height: 32px; }
+    .line-2{ height: 23px; }
 
-    .line-2{
-      height: 23px;   /* alt satır (boş, ama yer tutuyor) */
-    }
-
+    /* 🔥 BAŞLIK — büyütüldü + italik */
     h1{
       margin:0;
-      font-size: 1.1rem;
+      font-size: 1.6rem;
+      font-style: italic;
     }
 
     p{
@@ -96,27 +86,23 @@
       opacity:.95;
     }
 
-    .email{
-      font-size: 0.9rem;
-    }
+    .email{ font-size: 0.9rem; }
 
     .email a{
-      color:#ffffff;          /* 🔁 mail yazısı artık beyaz */
+      color:#ffffff;
       text-decoration:none;
     }
     .email a:hover{
       text-decoration:underline;
     }
 
-    /* Dijital saatin overlay'e göre konumu – X ve Y SENDE */
     .clock-wrapper{
       position:absolute;
       top: var(--clock-top);
       left: var(--clock-left);
-      transform: translateY(-50%);   /* sadece dikey ortalamak için */
+      transform: translateY(-50%);
     }
 
-    /* 🔴 Dijital saat stili (kırmızı LED + nefes animasyonu) */
     .digital-clock{
       font-family: "Courier New", monospace;
       font-size: var(--clock-font-size);
@@ -134,7 +120,6 @@
       text-shadow:
         0 0 6px rgba(255, 48, 48, 0.9),
         0 0 14px rgba(255, 48, 48, 0.8);
-
       animation: clockPulse var(--clock-pulse-duration) ease-in-out infinite;
     }
 
@@ -165,30 +150,25 @@
 <body>
 
   <div class="overlay">
-    <!-- SAAT: metinden bağımsız -->
     <div class="clock-wrapper">
       <span class="digital-clock" id="digital-clock">88:88:88</span>
     </div>
 
-    <!-- Yazılar için sabit yüksekliğe sahip blok -->
     <div class="text-block notranslate" translate="no">
       <div class="line-1">
         <h1 id="title-line"></h1>
       </div>
-      <!-- Alt satır boş kalsın ama yer tutsun -->
       <div class="line-2">
         <p id="subtitle-line"></p>
       </div>
     </div>
 
-    <!-- E-posta satırı – her zaman en altta, kutunun içinde -->
     <p class="email">
       <a href="mailto:info.roniva@gmail.com">info.roniva@gmail.com</a>
     </p>
   </div>
 
   <script>
-    /* ========== DİJİTAL SAAT ========== */
     function pad(n){ return n.toString().padStart(2,"0"); }
 
     function updateDigitalClock(){
@@ -202,11 +182,10 @@
     updateDigitalClock();
     setInterval(updateDigitalClock, 1000);
 
-    /* ========== TYPEWRITER – SADECE ÜST CÜMLE ========== */
-
     const titleText = "Website im Aufbau";
 
     const titleEl = document.getElementById("title-line");
+
     const rootStyles = getComputedStyle(document.documentElement);
     const TYPE_SPEED       = parseInt(rootStyles.getPropertyValue("--type-speed"))        || 90;
     const ERASE_SPEED      = parseInt(rootStyles.getPropertyValue("--erase-speed"))       || 60;
@@ -214,7 +193,7 @@
     const PAUSE_AFTER_ERASE= parseInt(rootStyles.getPropertyValue("--pause-after-erase")) || 600;
 
     let titleIndex = 0;
-    let phase = "typingTitle"; // typingTitle -> pauseAfterType -> erasingTitle -> pauseAfterErase
+    let phase = "typingTitle";
 
     function typeLoop(){
       if(phase === "typingTitle"){
