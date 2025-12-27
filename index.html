@@ -10,23 +10,23 @@
 
   <style>
     :root{
-      /* 🔧 OVERLAY (DIŞ KUTU) ÖLÇÜLERİ */
-      --overlay-width: 720px;     /* genişlik */
-      --overlay-height: 150px;    /* yükseklik (içerikten bağımsız min yükseklik) */
-      --overlay-offset-top: 500px;/* sayfada dikey konum (margin-top) */
+      /* 🔧 OVERLAY (DIŞ KUTU) ÖLÇÜLERİ – TAMAMEN SENDE */
+      --overlay-width: 720px;       /* genişlik */
+      --overlay-height: 160px;      /* yükseklik (SABİT) */
+      --overlay-offset-top: 500px;  /* sayfada yukarıdan uzaklık */
 
       /* 🔧 DİJİTAL SAAT AYARLARI */
       --clock-font-size: 28px;      /* saat yazı boyutu */
       --clock-padding: 8px 14px;    /* saat iç boşluğu */
-      --clock-left: -80px;          /* overlay'e göre soldan pozisyon (px veya %) */
-      --clock-top: 50%;             /* overlay'e göre yukarıdan pozisyon */
+      --clock-left: -300px;          /* overlay'e göre soldan pozisyon (px veya %) */
+      --clock-top: 50%;             /* overlay'e göre yukarıdan pozisyon (%) */
       --clock-pulse-duration: 2.5s; /* nefes animasyonu süresi */
-      --clock-scale-max: 1.05;      /* parlama anında büyüme oranı (1.00 = büyüme yok) */
+      --clock-scale-max: 1.2;      /* parlama anında büyüme oranı (1.00 = büyüme yok) */
 
       /* 🔧 TYPEWRITER (YAZI) HIZLARI – milisaniye */
       --type-speed: 90;             /* harf yazma hızı (küçük = daha hızlı) */
       --erase-speed: 60;            /* harf silme hızı */
-      --pause-after-type: 1200;     /* cümle bittiğinde bekleme süresi */
+      --pause-after-type: 1200;     /* iki satır da yazılınca bekleme */
       --pause-after-erase: 600;     /* tamamen silindikten sonra bekleme */
     }
 
@@ -46,15 +46,24 @@
     }
 
     .overlay{
-      position: relative;            /* saat için referans */
+      position: relative;                 /* saat için referans */
       background: rgba(0,0,0,0.55);
       border-radius: 18px;
       width: var(--overlay-width);
-      min-height: var(--overlay-height);
+      height: var(--overlay-height);      /* 🔒 sabit yükseklik */
       margin-top: var(--overlay-offset-top);
 
-      /* İçeriği dikey ve yatay ortala */
-      padding: 24px;
+      /* içerik yerleşimi: üst blok + mail her zaman aynı yerde */
+      padding: 20px 24px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;      /* üstte yazılar, altta mail */
+      align-items:center;
+    }
+
+    /* Yazı bloğu için sabit alan – yüksekliği değişmez */
+    .text-block{
+      height: 70px;                       /* istersen arttır/azalt */
       display:flex;
       flex-direction:column;
       justify-content:center;
@@ -62,7 +71,7 @@
     }
 
     h1{
-      margin:0 0 10px;
+      margin:0 0 8px;
     }
 
     p{
@@ -71,7 +80,6 @@
     }
 
     .email{
-      margin-top: 10px;
       font-size: 0.95rem;
     }
 
@@ -145,11 +153,13 @@
       <span class="digital-clock" id="digital-clock">88:88:88</span>
     </div>
 
-    <!-- Typewriter ile çizilecek metinler -->
-    <h1 id="title-line"></h1>
-    <p id="subtitle-line"></p>
+    <!-- Yazılar için sabit yüksekliğe sahip blok -->
+    <div class="text-block notranslate" translate="no">
+      <h1 id="title-line"></h1>
+      <p id="subtitle-line"></p>
+    </div>
 
-    <!-- E-posta satırı -->
+    <!-- E-posta satırı – her zaman en altta, 3. satır -->
     <p class="email">
       <a href="mailto:info.roniva@gmail.com">info.roniva@gmail.com</a>
     </p>
@@ -187,7 +197,7 @@
 
     let titleIndex = 0;
     let subIndex   = 0;
-    let phase = "typingTitle"; // typingTitle, typingSubtitle, pauseAfterType, erasingSubtitle, erasingTitle, pauseAfterErase
+    let phase = "typingTitle"; // typingTitle -> typingSubtitle -> pauseAfterType -> erasingSubtitle -> erasingTitle -> pauseAfterErase
 
     function typeLoop(){
       if(phase === "typingTitle"){
@@ -196,7 +206,6 @@
           titleEl.textContent = titleText.slice(0, titleIndex);
           setTimeout(typeLoop, TYPE_SPEED);
         }else{
-          // Başlık tamamlandı, biraz bekle sonra alt satırı yaz
           phase = "typingSubtitle";
           setTimeout(typeLoop, TYPE_SPEED);
         }
@@ -236,7 +245,6 @@
         }
 
       }else if(phase === "pauseAfterErase"){
-        // Baştan başla
         phase = "typingTitle";
         setTimeout(typeLoop, TYPE_SPEED);
       }
