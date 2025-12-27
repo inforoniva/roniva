@@ -18,7 +18,7 @@
       /* 🔧 DİJİTAL SAAT AYARLARI – TAMAMEN SENDE */
       --clock-font-size: 28px;      /* saat yazı boyutu */
       --clock-padding: 8px 14px;    /* saat iç boşluğu */
-      --clock-left: -300px;          /* overlay'e göre soldan pozisyon (px veya %) */
+      --clock-left: -300px;         /* overlay'e göre soldan pozisyon (px veya %) */
       --clock-top: 50%;             /* overlay'e göre yukarıdan pozisyon (%) */
       --clock-pulse-duration: 2.5s; /* nefes animasyonu süresi */
       --clock-scale-max: 1.05;      /* parlama anında büyüme (1.00 = büyüme yok) */
@@ -53,7 +53,8 @@
       height: var(--overlay-height);      /* 🔒 sabit yükseklik */
       margin-top: var(--overlay-offset-top);
 
-      padding: 20px 24px;
+      /* padding’i küçülttüm ki içerik sığsın */
+      padding: 10px 18px;
       display:flex;
       flex-direction:column;
       justify-content:space-between;      /* üstte yazı bloğu, altta mail */
@@ -62,7 +63,7 @@
 
     /* Yazı bloğu için sabit alan – yükseklik değişmez */
     .text-block{
-      height: 80px;                       /* iki satır için alan – istersen değiştir */
+      height: 55px;                       /* iki satır için alan – küçülttüm */
       display:flex;
       flex-direction:column;
       justify-content:center;
@@ -78,15 +79,16 @@
     }
 
     .line-1{
-      height: 40px;   /* başlık satırı yüksekliği */
+      height: 32px;   /* başlık satırı yüksekliği */
     }
 
     .line-2{
-      height: 30px;   /* alt satır (artık boş, ama yer tutuyor) */
+      height: 23px;   /* alt satır (boş, ama yer tutuyor) */
     }
 
     h1{
       margin:0;
+      font-size: 1.1rem;
     }
 
     p{
@@ -95,11 +97,11 @@
     }
 
     .email{
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .email a{
-      color:#ff3030;
+      color:#ffffff;          /* 🔁 mail yazısı artık beyaz */
       text-decoration:none;
     }
     .email a:hover{
@@ -179,7 +181,7 @@
       </div>
     </div>
 
-    <!-- E-posta satırı – her zaman en altta, 3. satır -->
+    <!-- E-posta satırı – her zaman en altta, kutunun içinde -->
     <p class="email">
       <a href="mailto:info.roniva@gmail.com">info.roniva@gmail.com</a>
     </p>
@@ -205,7 +207,6 @@
     const titleText = "Website im Aufbau";
 
     const titleEl = document.getElementById("title-line");
-    // alt satır artık kullanılmıyor
     const rootStyles = getComputedStyle(document.documentElement);
     const TYPE_SPEED       = parseInt(rootStyles.getPropertyValue("--type-speed"))        || 90;
     const ERASE_SPEED      = parseInt(rootStyles.getPropertyValue("--erase-speed"))       || 60;
