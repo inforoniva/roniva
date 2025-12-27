@@ -9,18 +9,23 @@
 
   <style>
     :root{
-      /* 🔧 KUTU ÖLÇÜLERİ – SENDE */
-      --overlay-width: 520px;      /* kutu genişliği */
-      --overlay-height: 160px;     /* kutu yüksekliği */
-      --overlay-offset-top: 560px; /* sayfada yukarıdan uzaklık */
 
-      /* 🔧 YAZI BOYUTLARI – TAMAMEN SENDE */
-      --title-size: 1.65rem;       /* Website im Aufbau */
-      --counter-number-size: 1.65rem; /* 00 rakamları (başlıkla aynı) */
-      --counter-label-size: 0.55rem;  /* Tage / Stunden metni */
-      --counter-color: #ffffff;       /* rakam + yazı rengi */
+      /* 🔧 SADECE BUNU DEĞİŞTİR – HER ŞEY OTOMATİK KÜÇÜLÜR/BÜYÜR */
+      --base-scale: 0.9;   /* 1 = normal | 0.9 = %10 küçük | 1.1 = %10 büyük */
 
-      /* Yazı animasyonu (typewriter) */
+      /* KUTU */
+      --overlay-width: calc(520px * var(--base-scale));
+      --overlay-height: calc(160px * var(--base-scale));
+      --overlay-offset-top: 560px;
+
+      /* YAZI */
+      --title-size: calc(1.65rem * var(--base-scale));
+
+      /* SAYAC NUMARALARI */
+      --counter-number-size: calc(1.65rem * var(--base-scale));
+      --counter-label-size: calc(0.65rem * var(--base-scale));
+
+      /* YAZI ANİMASYONU */
       --type-speed: 90;
       --erase-speed: 90;
       --pause-after-type: 1200;
@@ -51,83 +56,55 @@
       height: var(--overlay-height);
 
       margin-top: var(--overlay-offset-top);
-      padding: 10px 18px;
+      padding: 12px 18px;
 
       display:flex;
+      flex-direction:column;
       justify-content:center;
       align-items:center;
+      gap: 10px;
     }
 
     .text-block{
       display:flex;
-      flex-direction:column;        /* Üstte başlık, altta zaman */
       align-items:center;
       justify-content:center;
       width:100%;
-      height:100%;
-      gap: 6px;                     /* satırlar arası boşluk */
+      height:40%;
     }
 
-    .title-row{
-      width:100%;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height: 35%;                  /* sabit alan – kayma yok */
-    }
-
-    .counter-row{
-      width:100%;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height: 65%;                  /* sabit alan – kayma yok */
-    }
-
-    /* Başlık */
     h1{
       margin:0;
       font-size: var(--title-size);
       font-style: normal;
-      white-space: nowrap;
     }
 
-    /* Counter blokları */
+    /* ——— Sayaç ——— */
     .countdown{
       display:flex;
+      gap:18px;
       align-items:center;
       justify-content:center;
-      gap: 18px;                    /* bloklar arası boşluk */
-      color: var(--counter-color);
+      height:40%;
     }
 
-    .time-block{
+    .time-box{
       display:flex;
       flex-direction:column;
       align-items:center;
-      justify-content:flex-start;
-      min-width: 60px;
+      justify-content:center;
+      line-height:1.1;
     }
 
-    .time-number{
-      font-family: "Courier New", monospace;
+    .number{
       font-size: var(--counter-number-size);
-      line-height: 1;
+      font-weight: 600;
+      color:white;
     }
 
-    .time-label{
-      margin-top: 4px;
+    .label{
       font-size: var(--counter-label-size);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      opacity: 0.9;
-    }
-
-    .colon{
-      font-family: "Courier New", monospace;
-      font-size: var(--counter-number-size);
-      line-height: 1;
-      transform: translateY(-2px);  /* görsel hizalama */
+      opacity:.9;
     }
 
     footer{ display:none; }
@@ -136,48 +113,38 @@
 <body>
 
   <div class="overlay">
+
+    <!-- YAZI -->
     <div class="text-block notranslate" translate="no">
-      <!-- ÜST SATIR: Website im Aufbau -->
-      <div class="title-row">
-        <h1 id="title-line"></h1>
+      <h1 id="title-line"></h1>
+    </div>
+
+    <!-- SAYAÇ -->
+    <div class="countdown">
+      <div class="time-box">
+        <span class="number" id="days">00</span>
+        <span class="label">Tage</span>
       </div>
 
-      <!-- ALT SATIR: 00 : 00 : 00 : 00 tarzı GERİ SAYIM -->
-      <div class="counter-row">
-        <div class="countdown">
-          <div class="time-block">
-            <div class="time-number" id="cd-days">00</div>
-            <div class="time-label">Tage</div>
-          </div>
+      <div class="time-box">
+        <span class="number" id="hours">00</span>
+        <span class="label">Stunden</span>
+      </div>
 
-          <div class="colon">:</div>
+      <div class="time-box">
+        <span class="number" id="minutes">00</span>
+        <span class="label">Minuten</span>
+      </div>
 
-          <div class="time-block">
-            <div class="time-number" id="cd-hours">00</div>
-            <div class="time-label">Stunden</div>
-          </div>
-
-          <div class="colon">:</div>
-
-          <div class="time-block">
-            <div class="time-number" id="cd-minutes">00</div>
-            <div class="time-label">Minuten</div>
-          </div>
-
-          <div class="colon">:</div>
-
-          <div class="time-block">
-            <div class="time-number" id="cd-seconds">00</div>
-            <div class="time-label">Sekunden</div>
-          </div>
-        </div>
+      <div class="time-box">
+        <span class="number" id="seconds">00</span>
+        <span class="label">Sekunden</span>
       </div>
     </div>
   </div>
 
   <script>
-    /* ========== TYPEWRITER – Website im Aufbau ========== */
-
+    /* ====== TYPEWRITER ====== */
     const titleText = "Website im Aufbau";
     const titleEl   = document.getElementById("title-line");
 
@@ -223,35 +190,33 @@
 
     typeLoop();
 
-    /* ========== GERİ SAYIM – 3 AY SONRASINA ========== */
 
-    function pad(n){ return n.toString().padStart(2, "0"); }
-
-    // Hedef tarih: şu andan 3 ay sonrası
+    /* ====== 3 AY GERİYE SAYAN SAYAÇ ====== */
     const now = new Date();
-    const targetDate = new Date(now.getTime());
-    targetDate.setMonth(targetDate.getMonth() + 3);
+    const target = new Date();
+    target.setMonth( target.getMonth() + 3 );
 
     function updateCountdown(){
-      const current = new Date().getTime();
-      const distance = targetDate.getTime() - current;
+      const current = new Date();
+      const diff = target - current;
 
-      let days = 0, hours = 0, minutes = 0, seconds = 0;
-
-      if (distance > 0){
-        days    = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const remDay = distance % (1000 * 60 * 60 * 24);
-        hours   = Math.floor(remDay / (1000 * 60 * 60));
-        const remHour = remDay % (1000 * 60 * 60);
-        minutes = Math.floor(remHour / (1000 * 60));
-        const remMin = remHour % (1000 * 60);
-        seconds = Math.floor(remMin / 1000);
+      if(diff <= 0){
+        document.getElementById("days").textContent    = "00";
+        document.getElementById("hours").textContent   = "00";
+        document.getElementById("minutes").textContent = "00";
+        document.getElementById("seconds").textContent = "00";
+        return;
       }
 
-      document.getElementById("cd-days").textContent    = pad(days);
-      document.getElementById("cd-hours").textContent   = pad(hours);
-      document.getElementById("cd-minutes").textContent = pad(minutes);
-      document.getElementById("cd-seconds").textContent = pad(seconds);
+      const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours   = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("days").textContent    = String(days).padStart(2,"0");
+      document.getElementById("hours").textContent   = String(hours).padStart(2,"0");
+      document.getElementById("minutes").textContent = String(minutes).padStart(2,"0");
+      document.getElementById("seconds").textContent = String(seconds).padStart(2,"0");
     }
 
     updateCountdown();
