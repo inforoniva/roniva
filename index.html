@@ -15,6 +15,14 @@
       --overlay-height: 160px;      /* yükseklik (SABİT) */
       --overlay-offset-top: 500px;  /* sayfada yukarıdan uzaklık */
 
+      /* 🔧 DİJİTAL SAAT AYARLARI – TAMAMEN SENDE */
+      --clock-font-size: 28px;      /* saat yazı boyutu */
+      --clock-padding: 8px 14px;    /* saat iç boşluğu */
+      --clock-left: -200px;          /* overlay'e göre soldan pozisyon (px veya %) */
+      --clock-top: 50%;             /* overlay'e göre yukarıdan pozisyon (%) */
+      --clock-pulse-duration: 2.5s; /* nefes animasyonu süresi */
+      --clock-scale-max: 1.05;      /* parlama anında büyüme (1.00 = büyüme yok) */
+
       /* 🔧 TYPEWRITER (YAZI) HIZLARI – milisaniye */
       --type-speed: 90;             /* harf yazma hızı (küçük = daha hızlı) */
       --erase-speed: 60;            /* harf silme hızı */
@@ -99,12 +107,68 @@
       text-decoration:underline;
     }
 
+    /* Dijital saatin overlay'e göre konumu – X ve Y SENDE */
+    .clock-wrapper{
+      position:absolute;
+      top: var(--clock-top);
+      left: var(--clock-left);
+      transform: translateY(-50%);   /* sadece dikey ortalamak için */
+    }
+
+    /* 🔴 Dijital saat stili (kırmızı LED + nefes animasyonu) */
+    .digital-clock{
+      font-family: "Courier New", monospace;
+      font-size: var(--clock-font-size);
+      padding: var(--clock-padding);
+      color: #ff3030;
+      background: #050608;
+      border-radius: 7px;
+      letter-spacing: 3px;
+      display:inline-block;
+      min-width: 115px;
+      text-align:center;
+      box-shadow:
+        0 0 8px rgba(255, 48, 48, 0.65),
+        inset 0 0 6px rgba(0,0,0,0.9);
+      text-shadow:
+        0 0 6px rgba(255, 48, 48, 0.9),
+        0 0 14px rgba(255, 48, 48, 0.8);
+
+      animation: clockPulse var(--clock-pulse-duration) ease-in-out infinite;
+    }
+
+    @keyframes clockPulse{
+      0%{
+        box-shadow:
+          0 0 6px rgba(255, 48, 48, 0.5),
+          inset 0 0 4px rgba(0,0,0,0.9);
+        transform: scale(1);
+      }
+      50%{
+        box-shadow:
+          0 0 14px rgba(255, 48, 48, 0.9),
+          inset 0 0 6px rgba(0,0,0,0.9);
+        transform: scale(var(--clock-scale-max));
+      }
+      100%{
+        box-shadow:
+          0 0 6px rgba(255, 48, 48, 0.5),
+          inset 0 0 4px rgba(0,0,0,0.9);
+        transform: scale(1);
+      }
+    }
+
     footer{ display:none; }
   </style>
 </head>
 <body>
 
   <div class="overlay">
+    <!-- SAAT: metinden bağımsız, pozisyonu sendeki değişkenlerle -->
+    <div class="clock-wrapper">
+      <span class="digital-clock" id="digital-clock">88:88:88</span>
+    </div>
+
     <!-- Yazılar için sabit yüksekliğe sahip blok -->
     <div class="text-block notranslate" translate="no">
       <div class="line-1">
@@ -122,6 +186,20 @@
   </div>
 
   <script>
+    /* ========== DİJİTAL SAAT ========== */
+    function pad(n){ return n.toString().padStart(2,"0"); }
+
+    function updateDigitalClock(){
+      const now = new Date();
+      const h = pad(now.getHours());
+      const m = pad(now.getMinutes());
+      const s = pad(now.getSeconds());
+      document.getElementById("digital-clock").textContent = `${h}:${m}:${s}`;
+    }
+
+    updateDigitalClock();
+    setInterval(updateDigitalClock, 1000);
+
     /* ========== TYPEWRITER METİN ========== */
 
     const titleText = "Website im Aufbau";
