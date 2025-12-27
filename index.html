@@ -9,16 +9,23 @@
 
   <style>
     :root{
+      /* 🔧 Genel ölçek (1 = normal, 0.9 = %10 küçük) */
       --base-scale: 0.9;
 
+      /* Kutu */
       --overlay-width: calc(520px * var(--base-scale));
       --overlay-height: calc(160px * var(--base-scale));
       --overlay-offset-top: 560px;
 
+      /* Başlık */
       --title-size: calc(1.65rem * var(--base-scale));
 
+      /* Sayaç */
       --counter-number-size: calc(1.65rem * var(--base-scale));
       --counter-label-size: calc(0.65rem * var(--base-scale));
+
+      /* ⭐ Başlık–sayaç arası boşluk: TAMAMEN SENDE */
+      --gap-title-counter: 14px;
     }
 
     * { box-sizing: border-box; }
@@ -51,14 +58,14 @@
       align-items:center;
     }
 
-    /* 🔒 Başlık için sabit yükseklik (kayma olmaz) */
+    /* 🔒 Başlık alanı sabit – sayaç yukarı zıplamaz */
     .title-row{
-      height: calc(2.2rem * var(--base-scale));  /* sabit alan */
+      height: calc(2.2rem * var(--base-scale));
       display:flex;
       align-items:center;
       justify-content:center;
       width:100%;
-      margin-bottom: calc(8px * var(--base-scale)); /* başlık ile sayaç arası boşluk */
+      margin-bottom: var(--gap-title-counter);
     }
 
     h1{
@@ -89,6 +96,7 @@
       color:white;
     }
 
+    /* 🔴 saniye kırmızı */
     #seconds{
       color:#ff3a3a;
     }
@@ -113,13 +121,14 @@
 
   <div class="overlay">
 
-    <!-- 🔒 Sabit alanlı başlık -->
+    <!-- Başlık (animasyonlu) -->
     <div class="title-row notranslate" translate="no">
       <h1 id="title-line"></h1>
     </div>
 
     <!-- Sayaç -->
     <div class="countdown notranslate" translate="no">
+
       <div class="time-box">
         <span class="number" id="days">00</span>
         <span class="label">Tage</span>
@@ -145,12 +154,13 @@
         <span class="number" id="seconds">00</span>
         <span class="label">Sekunden</span>
       </div>
+
     </div>
 
   </div>
 
   <script>
-    /* ====== TYPEWRITER ====== */
+    /* ====== TYPEWRITER (Website im Aufbau) ====== */
 
     const titleText = "Website im Aufbau";
     const titleEl   = document.getElementById("title-line");
@@ -199,6 +209,7 @@
 
     /* ====== SABİT TARİHE GERİ SAYIM ====== */
 
+    // 💡 Açılış tarihini buradan değiştirebilirsin
     const target = new Date("2026-03-27T00:00:00");
 
     function updateCountdown(){
