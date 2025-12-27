@@ -11,14 +11,14 @@
   <style>
     :root{
       /* 🔧 OVERLAY (DIŞ KUTU) ÖLÇÜLERİ – TAMAMEN SENDE */
-      --overlay-width: 550px;       /* genişlik */
+      --overlay-width: 720px;       /* genişlik */
       --overlay-height: 160px;      /* yükseklik (SABİT) */
       --overlay-offset-top: 500px;  /* sayfada yukarıdan uzaklık */
 
       /* 🔧 DİJİTAL SAAT AYARLARI – TAMAMEN SENDE */
       --clock-font-size: 28px;      /* saat yazı boyutu */
       --clock-padding: 8px 14px;    /* saat iç boşluğu */
-      --clock-left: -300px;          /* overlay'e göre soldan pozisyon (px veya %) */
+      --clock-left: -80px;          /* overlay'e göre soldan pozisyon (px veya %) */
       --clock-top: 50%;             /* overlay'e göre yukarıdan pozisyon (%) */
       --clock-pulse-duration: 2.5s; /* nefes animasyonu süresi */
       --clock-scale-max: 1.05;      /* parlama anında büyüme (1.00 = büyüme yok) */
@@ -26,7 +26,7 @@
       /* 🔧 TYPEWRITER (YAZI) HIZLARI – milisaniye */
       --type-speed: 90;             /* harf yazma hızı (küçük = daha hızlı) */
       --erase-speed: 60;            /* harf silme hızı */
-      --pause-after-type: 1200;     /* iki satır da yazılınca bekleme */
+      --pause-after-type: 1200;     /* cümle yazılınca bekleme */
       --pause-after-erase: 600;     /* tamamen silindikten sonra bekleme */
     }
 
@@ -56,7 +56,7 @@
       padding: 20px 24px;
       display:flex;
       flex-direction:column;
-      justify-content:space-between;      /* üstte yazılar, altta mail */
+      justify-content:space-between;      /* üstte yazı bloğu, altta mail */
       align-items:center;
     }
 
@@ -69,7 +69,6 @@
       align-items:center;
     }
 
-    /* Her satır için sabit yükseklik; satırlar birbirine karışmaz */
     .line-1,
     .line-2{
       display:flex;
@@ -83,7 +82,7 @@
     }
 
     .line-2{
-      height: 30px;   /* alt satır yüksekliği */
+      height: 30px;   /* alt satır (artık boş, ama yer tutuyor) */
     }
 
     h1{
@@ -164,7 +163,7 @@
 <body>
 
   <div class="overlay">
-    <!-- SAAT: metinden bağımsız, pozisyonu sendeki değişkenlerle -->
+    <!-- SAAT: metinden bağımsız -->
     <div class="clock-wrapper">
       <span class="digital-clock" id="digital-clock">88:88:88</span>
     </div>
@@ -174,6 +173,7 @@
       <div class="line-1">
         <h1 id="title-line"></h1>
       </div>
+      <!-- Alt satır boş kalsın ama yer tutsun -->
       <div class="line-2">
         <p id="subtitle-line"></p>
       </div>
@@ -200,15 +200,12 @@
     updateDigitalClock();
     setInterval(updateDigitalClock, 1000);
 
-    /* ========== TYPEWRITER METİN ========== */
+    /* ========== TYPEWRITER – SADECE ÜST CÜMLE ========== */
 
     const titleText = "Website im Aufbau";
-    const subtitleText = "Wir arbeiten daran"; // noktasız
 
     const titleEl = document.getElementById("title-line");
-    const subEl   = document.getElementById("subtitle-line");
-
-    // CSS değişkenlerinden hızları oku
+    // alt satır artık kullanılmıyor
     const rootStyles = getComputedStyle(document.documentElement);
     const TYPE_SPEED       = parseInt(rootStyles.getPropertyValue("--type-speed"))        || 90;
     const ERASE_SPEED      = parseInt(rootStyles.getPropertyValue("--erase-speed"))       || 60;
@@ -216,8 +213,7 @@
     const PAUSE_AFTER_ERASE= parseInt(rootStyles.getPropertyValue("--pause-after-erase")) || 600;
 
     let titleIndex = 0;
-    let subIndex   = 0;
-    let phase = "typingTitle"; // typingTitle -> typingSubtitle -> pauseAfterType -> erasingSubtitle -> erasingTitle -> pauseAfterErase
+    let phase = "typingTitle"; // typingTitle -> pauseAfterType -> erasingTitle -> pauseAfterErase
 
     function typeLoop(){
       if(phase === "typingTitle"){
@@ -226,33 +222,13 @@
           titleEl.textContent = titleText.slice(0, titleIndex);
           setTimeout(typeLoop, TYPE_SPEED);
         }else{
-          phase = "typingSubtitle";
-          setTimeout(typeLoop, TYPE_SPEED);
-        }
-
-      }else if(phase === "typingSubtitle"){
-        if(subIndex < subtitleText.length){
-          subIndex++;
-          subEl.textContent = subtitleText.slice(0, subIndex);
-          setTimeout(typeLoop, TYPE_SPEED);
-        }else{
           phase = "pauseAfterType";
           setTimeout(typeLoop, PAUSE_AFTER_TYPE);
         }
 
       }else if(phase === "pauseAfterType"){
-        phase = "erasingSubtitle";
+        phase = "erasingTitle";
         setTimeout(typeLoop, ERASE_SPEED);
-
-      }else if(phase === "erasingSubtitle"){
-        if(subIndex > 0){
-          subIndex--;
-          subEl.textContent = subtitleText.slice(0, subIndex);
-          setTimeout(typeLoop, ERASE_SPEED);
-        }else{
-          phase = "erasingTitle";
-          setTimeout(typeLoop, ERASE_SPEED);
-        }
 
       }else if(phase === "erasingTitle"){
         if(titleIndex > 0){
