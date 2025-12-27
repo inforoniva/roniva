@@ -9,18 +9,14 @@
 
   <style>
     :root{
-      /* Tek kontrol — büyüt/küçült (1 = normal, 0.9 = %10 küçük) */
       --base-scale: 0.9;
 
-      /* Kutu */
       --overlay-width: calc(520px * var(--base-scale));
       --overlay-height: calc(160px * var(--base-scale));
       --overlay-offset-top: 560px;
 
-      /* Yazı */
       --title-size: calc(1.65rem * var(--base-scale));
 
-      /* Sayaç yazıları */
       --counter-number-size: calc(1.65rem * var(--base-scale));
       --counter-label-size: calc(0.65rem * var(--base-scale));
     }
@@ -48,11 +44,21 @@
       height: var(--overlay-height);
       margin-top: var(--overlay-offset-top);
       padding: 12px 18px;
+
       display:flex;
       flex-direction:column;
       justify-content:center;
       align-items:center;
-      gap: 10px;
+    }
+
+    /* 🔒 Başlık için sabit yükseklik (kayma olmaz) */
+    .title-row{
+      height: calc(2.2rem * var(--base-scale));  /* sabit alan */
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      margin-bottom: calc(8px * var(--base-scale)); /* başlık ile sayaç arası boşluk */
     }
 
     h1{
@@ -66,6 +72,7 @@
       align-items:center;
       justify-content:center;
       gap: 10px;
+      width:100%;
     }
 
     .time-box{
@@ -82,7 +89,6 @@
       color:white;
     }
 
-    /* 🔴 sadece saniye kırmızı */
     #seconds{
       color:#ff3a3a;
     }
@@ -92,12 +98,11 @@
       opacity:.9;
     }
 
-    /* sayıların arasındaki iki nokta */
     .colon{
       font-family:"Courier New", monospace;
       font-size: var(--counter-number-size);
-      line-height:1;
       color:white;
+      line-height:1;
       transform: translateY(-2px);
     }
 
@@ -108,14 +113,13 @@
 
   <div class="overlay">
 
-    <!-- BAŞLIK – animasyon için boş -->
-    <div class="text-block notranslate" translate="no">
+    <!-- 🔒 Sabit alanlı başlık -->
+    <div class="title-row notranslate" translate="no">
       <h1 id="title-line"></h1>
     </div>
 
-    <!-- SAYAÇ (Almanca sabit kalsın) -->
+    <!-- Sayaç -->
     <div class="countdown notranslate" translate="no">
-
       <div class="time-box">
         <span class="number" id="days">00</span>
         <span class="label">Tage</span>
@@ -141,12 +145,12 @@
         <span class="number" id="seconds">00</span>
         <span class="label">Sekunden</span>
       </div>
-
     </div>
+
   </div>
 
   <script>
-    /* ====== TYPEWRITER (Website im Aufbau) ====== */
+    /* ====== TYPEWRITER ====== */
 
     const titleText = "Website im Aufbau";
     const titleEl   = document.getElementById("title-line");
@@ -195,7 +199,6 @@
 
     /* ====== SABİT TARİHE GERİ SAYIM ====== */
 
-    // 💡 Açılış tarihini burada değiştir
     const target = new Date("2026-03-27T00:00:00");
 
     function updateCountdown(){
