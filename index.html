@@ -9,17 +9,18 @@
 
   <style>
     :root{
-      /* 🔧 KUTU – tamamı sende */
-      --overlay-width: 450px;      /* kutu genişliği */
-      --overlay-height: 120px;     /* kutu yüksekliği (biraz büyüttüm, istersen değiştir) */
+      /* 🔧 KUTU ÖLÇÜLERİ – SENDE */
+      --overlay-width: 520px;      /* kutu genişliği */
+      --overlay-height: 160px;     /* kutu yüksekliği */
       --overlay-offset-top: 560px; /* sayfada yukarıdan uzaklık */
 
-      /* 🔧 YAZI BOYUTLARI SENDE */
+      /* 🔧 YAZI BOYUTLARI – TAMAMEN SENDE */
       --title-size: 1.65rem;       /* Website im Aufbau */
-      --time-size: 1.0rem;         /* saat satırı */
-      --time-color: #f1f5f9;       /* saat yazı rengi */
+      --counter-number-size: 1.65rem; /* 00 rakamları (başlıkla aynı) */
+      --counter-label-size: 0.55rem;  /* Tage / Stunden metni */
+      --counter-color: #ffffff;       /* rakam + yazı rengi */
 
-      /* Yazı animasyonu */
+      /* Yazı animasyonu (typewriter) */
       --type-speed: 90;
       --erase-speed: 90;
       --pause-after-type: 1200;
@@ -59,44 +60,74 @@
 
     .text-block{
       display:flex;
-      flex-direction:column;   /* üstte başlık, altında saat */
+      flex-direction:column;        /* Üstte başlık, altta zaman */
       align-items:center;
       justify-content:center;
       width:100%;
       height:100%;
-      gap: 4px;                /* başlık ile saat arası boşluk */
+      gap: 6px;                     /* satırlar arası boşluk */
     }
 
-    .title-line,
-    .time-line{
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    .title-row{
       width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height: 35%;                  /* sabit alan – kayma yok */
     }
 
-    /* 🔽 başlık boyutu değişkenden geliyor */
+    .counter-row{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height: 65%;                  /* sabit alan – kayma yok */
+    }
+
+    /* Başlık */
     h1{
       margin:0;
       font-size: var(--title-size);
       font-style: normal;
+      white-space: nowrap;
     }
 
-    /* 🔽 saat satırı – arka plan yok, sadece yazı ve rakam */
-    .time-line{
-      font-size: var(--time-size);
-      color: var(--time-color);
-      font-weight: 400;
-      gap: 6px;
+    /* Counter blokları */
+    .countdown{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 18px;                    /* bloklar arası boşluk */
+      color: var(--counter-color);
+    }
+
+    .time-block{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      min-width: 60px;
+    }
+
+    .time-number{
+      font-family: "Courier New", monospace;
+      font-size: var(--counter-number-size);
+      line-height: 1;
     }
 
     .time-label{
+      margin-top: 4px;
+      font-size: var(--counter-label-size);
+      text-transform: uppercase;
+      letter-spacing: 1px;
       opacity: 0.9;
     }
 
-    .time-value{
+    .colon{
       font-family: "Courier New", monospace;
-      letter-spacing: 2px;
+      font-size: var(--counter-number-size);
+      line-height: 1;
+      transform: translateY(-2px);  /* görsel hizalama */
     }
 
     footer{ display:none; }
@@ -106,15 +137,40 @@
 
   <div class="overlay">
     <div class="text-block notranslate" translate="no">
-      <!-- ÜST SATIR: Website im Aufbau (typewriter) -->
-      <div class="title-line">
+      <!-- ÜST SATIR: Website im Aufbau -->
+      <div class="title-row">
         <h1 id="title-line"></h1>
       </div>
 
-      <!-- ALT SATIR: Almanca zaman yazısı + gerçek saat -->
-      <div class="time-line">
-        <span class="time-label">Aktuelle Uhrzeit:</span>
-        <span class="time-value" id="time-value">00:00:00</span>
+      <!-- ALT SATIR: 00 : 00 : 00 : 00 tarzı GERİ SAYIM -->
+      <div class="counter-row">
+        <div class="countdown">
+          <div class="time-block">
+            <div class="time-number" id="cd-days">00</div>
+            <div class="time-label">Tage</div>
+          </div>
+
+          <div class="colon">:</div>
+
+          <div class="time-block">
+            <div class="time-number" id="cd-hours">00</div>
+            <div class="time-label">Stunden</div>
+          </div>
+
+          <div class="colon">:</div>
+
+          <div class="time-block">
+            <div class="time-number" id="cd-minutes">00</div>
+            <div class="time-label">Minuten</div>
+          </div>
+
+          <div class="colon">:</div>
+
+          <div class="time-block">
+            <div class="time-number" id="cd-seconds">00</div>
+            <div class="time-label">Sekunden</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -167,20 +223,39 @@
 
     typeLoop();
 
-    /* ========== SAAT – ALT SATIRDA GERÇEK ZAMAN ========== */
+    /* ========== GERİ SAYIM – 3 AY SONRASINA ========== */
 
     function pad(n){ return n.toString().padStart(2, "0"); }
 
-    function updateTime(){
-      const now = new Date();
-      const h = pad(now.getHours());
-      const m = pad(now.getMinutes());
-      const s = pad(now.getSeconds());
-      document.getElementById("time-value").textContent = `${h}:${m}:${s}`;
+    // Hedef tarih: şu andan 3 ay sonrası
+    const now = new Date();
+    const targetDate = new Date(now.getTime());
+    targetDate.setMonth(targetDate.getMonth() + 3);
+
+    function updateCountdown(){
+      const current = new Date().getTime();
+      const distance = targetDate.getTime() - current;
+
+      let days = 0, hours = 0, minutes = 0, seconds = 0;
+
+      if (distance > 0){
+        days    = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const remDay = distance % (1000 * 60 * 60 * 24);
+        hours   = Math.floor(remDay / (1000 * 60 * 60));
+        const remHour = remDay % (1000 * 60 * 60);
+        minutes = Math.floor(remHour / (1000 * 60));
+        const remMin = remHour % (1000 * 60);
+        seconds = Math.floor(remMin / 1000);
+      }
+
+      document.getElementById("cd-days").textContent    = pad(days);
+      document.getElementById("cd-hours").textContent   = pad(hours);
+      document.getElementById("cd-minutes").textContent = pad(minutes);
+      document.getElementById("cd-seconds").textContent = pad(seconds);
     }
 
-    updateTime();
-    setInterval(updateTime, 1000);
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
   </script>
 
 </body>
