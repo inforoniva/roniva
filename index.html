@@ -5,21 +5,18 @@
   <title>RONIVA – Website im Aufbau</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Favicon: logonu "roniva-logo.png" adıyla repo'ya ekle -->
   <link rel="icon" type="image/png" href="roniva-logo.png" />
 
   <style>
     :root{
-      /* 🔧 OVERLAY (DIŞ KUTU) ÖLÇÜLERİ – SENDE */
-      --overlay-width: 450px;       /* genişlik */
-      --overlay-height: 100px;      /* yükseklik (SABİT) */
-      --overlay-offset-top: 560px;  /* sayfada yukarıdan uzaklık */
+      --overlay-width: 450px;
+      --overlay-height: 100px;
+      --overlay-offset-top: 560px;
 
-      /* 🔧 TYPEWRITER (YAZI) HIZLARI – milisaniye */
-      --type-speed: 90;             /* harf yazma hızı (küçük = daha hızlı) */
-      --erase-speed: 60;            /* harf silme hızı */
-      --pause-after-type: 1200;     /* cümle yazılınca bekleme */
-      --pause-after-erase: 600;     /* tamamen silindikten sonra bekleme */
+      --type-speed: 90;
+      --erase-speed: 60;
+      --pause-after-type: 1200;
+      --pause-after-erase: 600;
     }
 
     * { box-sizing: border-box; }
@@ -42,14 +39,13 @@
       background: rgba(0,0,0,0.55);
       border-radius: 18px;
       width: var(--overlay-width);
-      height: var(--overlay-height);      /* 🔒 sabit yükseklik */
+      height: var(--overlay-height);
       margin-top: var(--overlay-offset-top);
-
       padding: 10px 18px;
+
       display:flex;
-      flex-direction:column;
-      justify-content:center;             /* dikey ortalama */
-      align-items:center;                 /* yatay ortalama */
+      justify-content:center;   /* dikey ortala */
+      align-items:center;       /* yatay ortala */
     }
 
     .text-block{
@@ -60,10 +56,11 @@
       height:100%;
     }
 
+    /* 🔥 1.5x büyütüldü */
     h1{
       margin:0;
-      font-size: 1.1rem;                  /* eski boyut */
-      font-style: normal;                 /* italik değil */
+      font-size: 1.65rem;
+      font-style: normal;
     }
 
     footer{ display:none; }
@@ -78,19 +75,17 @@
   </div>
 
   <script>
-    /* ========== TYPEWRITER – SADECE ÜST CÜMLE ========== */
-
     const titleText = "Website im Aufbau";
-    const titleEl = document.getElementById("title-line");
+    const titleEl   = document.getElementById("title-line");
 
-    const rootStyles = getComputedStyle(document.documentElement);
+    const rootStyles       = getComputedStyle(document.documentElement);
     const TYPE_SPEED       = parseInt(rootStyles.getPropertyValue("--type-speed"))        || 90;
     const ERASE_SPEED      = parseInt(rootStyles.getPropertyValue("--erase-speed"))       || 60;
     const PAUSE_AFTER_TYPE = parseInt(rootStyles.getPropertyValue("--pause-after-type"))  || 1200;
     const PAUSE_AFTER_ERASE= parseInt(rootStyles.getPropertyValue("--pause-after-erase")) || 600;
 
     let titleIndex = 0;
-    let phase = "typingTitle"; // typingTitle -> pauseAfterType -> erasingTitle -> pauseAfterErase
+    let phase = "typingTitle";
 
     function typeLoop(){
       if(phase === "typingTitle"){
@@ -98,26 +93,26 @@
           titleIndex++;
           titleEl.textContent = titleText.slice(0, titleIndex);
           setTimeout(typeLoop, TYPE_SPEED);
-        }else{
+        } else {
           phase = "pauseAfterType";
           setTimeout(typeLoop, PAUSE_AFTER_TYPE);
         }
 
-      }else if(phase === "pauseAfterType"){
+      } else if(phase === "pauseAfterType"){
         phase = "erasingTitle";
         setTimeout(typeLoop, ERASE_SPEED);
 
-      }else if(phase === "erasingTitle"){
+      } else if(phase === "erasingTitle"){
         if(titleIndex > 0){
           titleIndex--;
           titleEl.textContent = titleText.slice(0, titleIndex);
           setTimeout(typeLoop, ERASE_SPEED);
-        }else{
+        } else {
           phase = "pauseAfterErase";
           setTimeout(typeLoop, PAUSE_AFTER_ERASE);
         }
 
-      }else if(phase === "pauseAfterErase"){
+      } else if(phase === "pauseAfterErase"){
         phase = "typingTitle";
         setTimeout(typeLoop, TYPE_SPEED);
       }
