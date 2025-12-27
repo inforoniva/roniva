@@ -5,22 +5,29 @@
   <title>RONIVA – Website im Aufbau</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Favicon: logonu "roniva-logo.png" adıyla repo'ya yükle -->
+  <!-- Favicon: logonu "roniva-logo.png" adıyla repo'ya ekle -->
   <link rel="icon" type="image/png" href="roniva-logo.png" />
 
   <style>
     :root{
-      /* 🔧 DİJİTAL SAAT AYARLARI */
-      --clock-font-size: 28px;        /* saat yazı boyutu */
-      --clock-padding: 8px 14px;      /* saat iç boşluğu */
-      --clock-offset-x: -80px;        /* 0=kutunun solundan, negatif= daha sola çıkar */
-      --clock-pulse-duration: 2.5s;   /* nefes animasyonu süresi */
+      /* 🔧 OVERLAY (DIŞ KUTU) ÖLÇÜLERİ */
+      --overlay-width: 720px;     /* genişlik */
+      --overlay-height: 150px;    /* yükseklik (içerikten bağımsız min yükseklik) */
+      --overlay-offset-top: 500px;/* sayfada dikey konum (margin-top) */
 
-      /* 🔧 YAZI / TYPEWRITER AYARLARI (ms) */
-      --type-speed: 90;              /* harf yazma hızı (düşük = daha hızlı) */
-      --erase-speed: 60;             /* harf silme hızı */
-      --pause-after-type: 1200;      /* cümle tamamlanınca bekleme */
-      --pause-after-erase: 600;      /* silindikten sonra bekleme */
+      /* 🔧 DİJİTAL SAAT AYARLARI */
+      --clock-font-size: 28px;      /* saat yazı boyutu */
+      --clock-padding: 8px 14px;    /* saat iç boşluğu */
+      --clock-left: -80px;          /* overlay'e göre soldan pozisyon (px veya %) */
+      --clock-top: 50%;             /* overlay'e göre yukarıdan pozisyon */
+      --clock-pulse-duration: 2.5s; /* nefes animasyonu süresi */
+      --clock-scale-max: 1.05;      /* parlama anında büyüme oranı (1.00 = büyüme yok) */
+
+      /* 🔧 TYPEWRITER (YAZI) HIZLARI – milisaniye */
+      --type-speed: 90;             /* harf yazma hızı (küçük = daha hızlı) */
+      --erase-speed: 60;            /* harf silme hızı */
+      --pause-after-type: 1200;     /* cümle bittiğinde bekleme süresi */
+      --pause-after-erase: 600;     /* tamamen silindikten sonra bekleme */
     }
 
     * { box-sizing: border-box; }
@@ -41,11 +48,17 @@
     .overlay{
       position: relative;            /* saat için referans */
       background: rgba(0,0,0,0.55);
-      padding: 32px 24px;
       border-radius: 18px;
-      max-width: 720px;
-      width: 100%;
-      margin-top: 500px;            /* kutunun dikey konumu */
+      width: var(--overlay-width);
+      min-height: var(--overlay-height);
+      margin-top: var(--overlay-offset-top);
+
+      /* İçeriği dikey ve yatay ortala */
+      padding: 24px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
     }
 
     h1{
@@ -70,12 +83,12 @@
       text-decoration:underline;
     }
 
-    /* Dijital saatin kutuya göre konumu */
+    /* Dijital saatin overlay'e göre konumu – X ve Y senin elinde */
     .clock-wrapper{
       position:absolute;
-      top:50%;                        /* yükseklik: ortalı */
-      transform: translateY(-50%);    /* sadece Y ekseni */
-      left: var(--clock-offset-x);    /* sola/sağa kaydırma – NEGATİF yapabilirsin */
+      top: var(--clock-top);
+      left: var(--clock-left);
+      transform: translateY(-50%);   /* sadece dikey ortalamak için */
     }
 
     /* 🔴 Dijital saat stili (kırmızı LED + nefes animasyonu) */
@@ -111,7 +124,7 @@
         box-shadow:
           0 0 14px rgba(255, 48, 48, 0.9),
           inset 0 0 6px rgba(0,0,0,0.9);
-        transform: scale(1.03);
+        transform: scale(var(--clock-scale-max));
       }
       100%{
         box-shadow:
@@ -143,7 +156,7 @@
   </div>
 
   <script>
-    /* ================== DİJİTAL SAAT ================== */
+    /* ========== DİJİTAL SAAT ========== */
     function pad(n){ return n.toString().padStart(2,"0"); }
 
     function updateDigitalClock(){
@@ -157,7 +170,7 @@
     updateDigitalClock();
     setInterval(updateDigitalClock, 1000);
 
-    /* ================== TYPEWRITER METİN ================== */
+    /* ========== TYPEWRITER METİN ========== */
 
     const titleText = "Website im Aufbau";
     const subtitleText = "Wir arbeiten daran"; // noktasız
@@ -167,48 +180,64 @@
 
     // CSS değişkenlerinden hızları oku
     const rootStyles = getComputedStyle(document.documentElement);
-    const TYPE_SPEED       = parseInt(rootStyles.getPropertyValue("--type-speed"))       || 90;
-    const ERASE_SPEED      = parseInt(rootStyles.getPropertyValue("--erase-speed"))      || 60;
-    const PAUSE_AFTER_TYPE = parseInt(rootStyles.getPropertyValue("--pause-after-type")) || 1200;
-    const PAUSE_AFTER_ERASE= parseInt(rootStyles.getPropertyValue("--pause-after-erase"))|| 600;
+    const TYPE_SPEED       = parseInt(rootStyles.getPropertyValue("--type-speed"))        || 90;
+    const ERASE_SPEED      = parseInt(rootStyles.getPropertyValue("--erase-speed"))       || 60;
+    const PAUSE_AFTER_TYPE = parseInt(rootStyles.getPropertyValue("--pause-after-type"))  || 1200;
+    const PAUSE_AFTER_ERASE= parseInt(rootStyles.getPropertyValue("--pause-after-erase")) || 600;
 
-    let index = 0;
-    let phase = "typing";  // typing, pauseAfterType, erasing, pauseAfterErase
-    const maxLen = Math.max(titleText.length, subtitleText.length);
+    let titleIndex = 0;
+    let subIndex   = 0;
+    let phase = "typingTitle"; // typingTitle, typingSubtitle, pauseAfterType, erasingSubtitle, erasingTitle, pauseAfterErase
 
     function typeLoop(){
-      if(phase === "typing"){
-        index++;
-        titleEl.textContent = titleText.slice(0, Math.min(index, titleText.length));
-        subEl.textContent   = subtitleText.slice(0, Math.min(index, subtitleText.length));
-
-        if(index >= maxLen){
-          phase = "pauseAfterType";
-          setTimeout(typeLoop, PAUSE_AFTER_TYPE);
-        } else {
+      if(phase === "typingTitle"){
+        if(titleIndex < titleText.length){
+          titleIndex++;
+          titleEl.textContent = titleText.slice(0, titleIndex);
+          setTimeout(typeLoop, TYPE_SPEED);
+        }else{
+          // Başlık tamamlandı, biraz bekle sonra alt satırı yaz
+          phase = "typingSubtitle";
           setTimeout(typeLoop, TYPE_SPEED);
         }
 
-      } else if(phase === "pauseAfterType"){
-        phase = "erasing";
+      }else if(phase === "typingSubtitle"){
+        if(subIndex < subtitleText.length){
+          subIndex++;
+          subEl.textContent = subtitleText.slice(0, subIndex);
+          setTimeout(typeLoop, TYPE_SPEED);
+        }else{
+          phase = "pauseAfterType";
+          setTimeout(typeLoop, PAUSE_AFTER_TYPE);
+        }
+
+      }else if(phase === "pauseAfterType"){
+        phase = "erasingSubtitle";
         setTimeout(typeLoop, ERASE_SPEED);
 
-      } else if(phase === "erasing"){
-        index--;
-        if(index < 0) index = 0;
-
-        titleEl.textContent = titleText.slice(0, Math.min(index, titleText.length));
-        subEl.textContent   = subtitleText.slice(0, Math.min(index, subtitleText.length));
-
-        if(index === 0){
-          phase = "pauseAfterErase";
-          setTimeout(typeLoop, PAUSE_AFTER_ERASE);
-        } else {
+      }else if(phase === "erasingSubtitle"){
+        if(subIndex > 0){
+          subIndex--;
+          subEl.textContent = subtitleText.slice(0, subIndex);
+          setTimeout(typeLoop, ERASE_SPEED);
+        }else{
+          phase = "erasingTitle";
           setTimeout(typeLoop, ERASE_SPEED);
         }
 
-      } else if(phase === "pauseAfterErase"){
-        phase = "typing";
+      }else if(phase === "erasingTitle"){
+        if(titleIndex > 0){
+          titleIndex--;
+          titleEl.textContent = titleText.slice(0, titleIndex);
+          setTimeout(typeLoop, ERASE_SPEED);
+        }else{
+          phase = "pauseAfterErase";
+          setTimeout(typeLoop, PAUSE_AFTER_ERASE);
+        }
+
+      }else if(phase === "pauseAfterErase"){
+        // Baştan başla
+        phase = "typingTitle";
         setTimeout(typeLoop, TYPE_SPEED);
       }
     }
