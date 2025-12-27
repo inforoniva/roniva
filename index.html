@@ -4,18 +4,23 @@
   <meta charset="utf-8" />
   <title>RONIVA – Website im Aufbau</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <link rel="icon" type="image/png" href="roniva-logo.png" />
 
   <style>
     :root{
+      /* Tek kontrol — büyüt/küçült (1 = normal, 0.9 = %10 küçük) */
       --base-scale: 0.9;
 
+      /* Kutu */
       --overlay-width: calc(520px * var(--base-scale));
       --overlay-height: calc(160px * var(--base-scale));
       --overlay-offset-top: 560px;
 
+      /* Yazı */
       --title-size: calc(1.65rem * var(--base-scale));
 
+      /* Sayaç yazıları */
       --counter-number-size: calc(1.65rem * var(--base-scale));
       --counter-label-size: calc(0.65rem * var(--base-scale));
     }
@@ -53,6 +58,7 @@
     h1{
       margin:0;
       font-size: var(--title-size);
+      white-space: nowrap;
     }
 
     .countdown{
@@ -86,7 +92,7 @@
       opacity:.9;
     }
 
-    /* aradaki iki nokta stili */
+    /* sayıların arasındaki iki nokta */
     .colon{
       font-family:"Courier New", monospace;
       font-size: var(--counter-number-size);
@@ -102,11 +108,12 @@
 
   <div class="overlay">
 
+    <!-- BAŞLIK – animasyon için boş -->
     <div class="text-block notranslate" translate="no">
-      <h1 id="title-line">Website im Aufbau</h1>
+      <h1 id="title-line"></h1>
     </div>
 
-    <!-- Sayaç -->
+    <!-- SAYAÇ (Almanca sabit kalsın) -->
     <div class="countdown notranslate" translate="no">
 
       <div class="time-box">
@@ -139,9 +146,56 @@
   </div>
 
   <script>
+    /* ====== TYPEWRITER (Website im Aufbau) ====== */
+
+    const titleText = "Website im Aufbau";
+    const titleEl   = document.getElementById("title-line");
+
+    const TYPE_SPEED = 90;
+    const ERASE_SPEED = 70;
+    const PAUSE_AFTER_TYPE = 1200;
+    const PAUSE_AFTER_ERASE = 600;
+
+    let i = 0;
+    let phase = "typing";
+
+    function typeLoop() {
+      if (phase === "typing") {
+        if (i < titleText.length) {
+          i++;
+          titleEl.textContent = titleText.slice(0, i);
+          setTimeout(typeLoop, TYPE_SPEED);
+        } else {
+          phase = "pauseAfterType";
+          setTimeout(typeLoop, PAUSE_AFTER_TYPE);
+        }
+
+      } else if (phase === "pauseAfterType") {
+        phase = "erasing";
+        setTimeout(typeLoop, ERASE_SPEED);
+
+      } else if (phase === "erasing") {
+        if (i > 0) {
+          i--;
+          titleEl.textContent = titleText.slice(0, i);
+          setTimeout(typeLoop, ERASE_SPEED);
+        } else {
+          phase = "pauseAfterErase";
+          setTimeout(typeLoop, PAUSE_AFTER_ERASE);
+        }
+
+      } else if (phase === "pauseAfterErase") {
+        phase = "typing";
+        setTimeout(typeLoop, TYPE_SPEED);
+      }
+    }
+
+    typeLoop();
+
+
     /* ====== SABİT TARİHE GERİ SAYIM ====== */
 
-    // 💡 Açılış tarihini buradan değiştir
+    // 💡 Açılış tarihini burada değiştir
     const target = new Date("2026-03-27T00:00:00");
 
     function updateCountdown(){
@@ -149,7 +203,7 @@
       const diff = target - now;
 
       if(diff <= 0){
-        days.innerText = hours.innerText = minutes.innerText = seconds.innerText = "00";
+        days.textContent = hours.textContent = minutes.textContent = seconds.textContent = "00";
         return;
       }
 
@@ -158,10 +212,10 @@
       const m = Math.floor((diff / (1000 * 60)) % 60);
       const s = Math.floor((diff / 1000) % 60);
 
-      days.innerText    = String(d).padStart(2,"0");
-      hours.innerText   = String(h).padStart(2,"0");
-      minutes.innerText = String(m).padStart(2,"0");
-      seconds.innerText = String(s).padStart(2,"0");
+      days.textContent    = String(d).padStart(2,"0");
+      hours.textContent   = String(h).padStart(2,"0");
+      minutes.textContent = String(m).padStart(2,"0");
+      seconds.textContent = String(s).padStart(2,"0");
     }
 
     updateCountdown();
