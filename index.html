@@ -9,13 +9,15 @@
 
   <style>
     :root{
-      /* 🔧 KUTU TAMAMEN SENDE */
-      --overlay-width: 450px;     /* kutu genişliği */
-      --overlay-height: 100px;    /* kutu yüksekliği */
-      --overlay-offset-top: 560px;
+      /* 🔧 KUTU – tamamı sende */
+      --overlay-width: 450px;      /* kutu genişliği */
+      --overlay-height: 120px;     /* kutu yüksekliği (biraz büyüttüm, istersen değiştir) */
+      --overlay-offset-top: 560px; /* sayfada yukarıdan uzaklık */
 
-      /* 🔧 YAZI BOYUTU TAMAMEN SENDE */
-      --title-size: 1.65rem;
+      /* 🔧 YAZI BOYUTLARI SENDE */
+      --title-size: 1.65rem;       /* Website im Aufbau */
+      --time-size: 1.0rem;         /* saat satırı */
+      --time-color: #f1f5f9;       /* saat yazı rengi */
 
       /* Yazı animasyonu */
       --type-speed: 90;
@@ -44,7 +46,6 @@
       background: rgba(0,0,0,0.55);
       border-radius: 18px;
 
-      /* 🔽 kutu ölçüleri değişkenden geliyor */
       width: var(--overlay-width);
       height: var(--overlay-height);
 
@@ -58,17 +59,44 @@
 
     .text-block{
       display:flex;
+      flex-direction:column;   /* üstte başlık, altında saat */
       align-items:center;
       justify-content:center;
       width:100%;
       height:100%;
+      gap: 4px;                /* başlık ile saat arası boşluk */
     }
 
-    /* 🔽 yazı boyutu değişkenden geliyor */
+    .title-line,
+    .time-line{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+    }
+
+    /* 🔽 başlık boyutu değişkenden geliyor */
     h1{
       margin:0;
       font-size: var(--title-size);
       font-style: normal;
+    }
+
+    /* 🔽 saat satırı – arka plan yok, sadece yazı ve rakam */
+    .time-line{
+      font-size: var(--time-size);
+      color: var(--time-color);
+      font-weight: 400;
+      gap: 6px;
+    }
+
+    .time-label{
+      opacity: 0.9;
+    }
+
+    .time-value{
+      font-family: "Courier New", monospace;
+      letter-spacing: 2px;
     }
 
     footer{ display:none; }
@@ -78,11 +106,22 @@
 
   <div class="overlay">
     <div class="text-block notranslate" translate="no">
-      <h1 id="title-line"></h1>
+      <!-- ÜST SATIR: Website im Aufbau (typewriter) -->
+      <div class="title-line">
+        <h1 id="title-line"></h1>
+      </div>
+
+      <!-- ALT SATIR: Almanca zaman yazısı + gerçek saat -->
+      <div class="time-line">
+        <span class="time-label">Aktuelle Uhrzeit:</span>
+        <span class="time-value" id="time-value">00:00:00</span>
+      </div>
     </div>
   </div>
 
   <script>
+    /* ========== TYPEWRITER – Website im Aufbau ========== */
+
     const titleText = "Website im Aufbau";
     const titleEl   = document.getElementById("title-line");
 
@@ -127,6 +166,21 @@
     }
 
     typeLoop();
+
+    /* ========== SAAT – ALT SATIRDA GERÇEK ZAMAN ========== */
+
+    function pad(n){ return n.toString().padStart(2, "0"); }
+
+    function updateTime(){
+      const now = new Date();
+      const h = pad(now.getHours());
+      const m = pad(now.getMinutes());
+      const s = pad(now.getSeconds());
+      document.getElementById("time-value").textContent = `${h}:${m}:${s}`;
+    }
+
+    updateTime();
+    setInterval(updateTime, 1000);
   </script>
 
 </body>
