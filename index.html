@@ -5,25 +5,21 @@
   <title>RONIVA – Website im Aufbau</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- Favicon: logonu "roniva-logo.png" adıyla repo'ya ekle -->
   <link rel="icon" type="image/png" href="roniva-logo.png" />
 
   <style>
     :root{
-      --overlay-width: 450px;
-      --overlay-height: 100px;
-      --overlay-offset-top: 560px;
+      /* 🔧 OVERLAY (DIŞ KUTU) ÖLÇÜLERİ – SENDE */
+      --overlay-width: 450px;       /* genişlik */
+      --overlay-height: 100px;      /* yükseklik (SABİT) */
+      --overlay-offset-top: 560px;  /* sayfada yukarıdan uzaklık */
 
-      --clock-font-size: 28px;
-      --clock-padding: 8px 14px;
-      --clock-left: -300px;
-      --clock-top: 50%;
-      --clock-pulse-duration: 2.5s;
-      --clock-scale-max: 1.05;
-
-      --type-speed: 90;
-      --erase-speed: 60;
-      --pause-after-type: 1200;
-      --pause-after-erase: 600;
+      /* 🔧 TYPEWRITER (YAZI) HIZLARI – milisaniye */
+      --type-speed: 90;             /* harf yazma hızı (küçük = daha hızlı) */
+      --erase-speed: 60;            /* harf silme hızı */
+      --pause-after-type: 1200;     /* cümle yazılınca bekleme */
+      --pause-after-erase: 600;     /* tamamen silindikten sonra bekleme */
     }
 
     * { box-sizing: border-box; }
@@ -46,102 +42,28 @@
       background: rgba(0,0,0,0.55);
       border-radius: 18px;
       width: var(--overlay-width);
-      height: var(--overlay-height);
+      height: var(--overlay-height);      /* 🔒 sabit yükseklik */
       margin-top: var(--overlay-offset-top);
+
       padding: 10px 18px;
       display:flex;
       flex-direction:column;
-      justify-content:space-between;
-      align-items:center;
+      justify-content:center;             /* dikey ortalama */
+      align-items:center;                 /* yatay ortalama */
     }
 
     .text-block{
-      height: 55px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-    }
-
-    .line-1,
-    .line-2{
       display:flex;
       align-items:center;
       justify-content:center;
       width:100%;
+      height:100%;
     }
 
-    .line-1{ height: 32px; }
-    .line-2{ height: 23px; }
-
-    /* 🔥 BAŞLIK — büyütüldü + italik */
     h1{
       margin:0;
-      font-size: 1.6rem;
-      font-style: italic;
-    }
-
-    p{
-      margin:0;
-      opacity:.95;
-    }
-
-    .email{ font-size: 0.9rem; }
-
-    .email a{
-      color:#ffffff;
-      text-decoration:none;
-    }
-    .email a:hover{
-      text-decoration:underline;
-    }
-
-    .clock-wrapper{
-      position:absolute;
-      top: var(--clock-top);
-      left: var(--clock-left);
-      transform: translateY(-50%);
-    }
-
-    .digital-clock{
-      font-family: "Courier New", monospace;
-      font-size: var(--clock-font-size);
-      padding: var(--clock-padding);
-      color: #ff3030;
-      background: #050608;
-      border-radius: 7px;
-      letter-spacing: 3px;
-      display:inline-block;
-      min-width: 115px;
-      text-align:center;
-      box-shadow:
-        0 0 8px rgba(255, 48, 48, 0.65),
-        inset 0 0 6px rgba(0,0,0,0.9);
-      text-shadow:
-        0 0 6px rgba(255, 48, 48, 0.9),
-        0 0 14px rgba(255, 48, 48, 0.8);
-      animation: clockPulse var(--clock-pulse-duration) ease-in-out infinite;
-    }
-
-    @keyframes clockPulse{
-      0%{
-        box-shadow:
-          0 0 6px rgba(255, 48, 48, 0.5),
-          inset 0 0 4px rgba(0,0,0,0.9);
-        transform: scale(1);
-      }
-      50%{
-        box-shadow:
-          0 0 14px rgba(255, 48, 48, 0.9),
-          inset 0 0 6px rgba(0,0,0,0.9);
-        transform: scale(var(--clock-scale-max));
-      }
-      100%{
-        box-shadow:
-          0 0 6px rgba(255, 48, 48, 0.5),
-          inset 0 0 4px rgba(0,0,0,0.9);
-        transform: scale(1);
-      }
+      font-size: 1.1rem;                  /* eski boyut */
+      font-style: normal;                 /* italik değil */
     }
 
     footer{ display:none; }
@@ -150,40 +72,15 @@
 <body>
 
   <div class="overlay">
-    <div class="clock-wrapper">
-      <span class="digital-clock" id="digital-clock">88:88:88</span>
-    </div>
-
     <div class="text-block notranslate" translate="no">
-      <div class="line-1">
-        <h1 id="title-line"></h1>
-      </div>
-      <div class="line-2">
-        <p id="subtitle-line"></p>
-      </div>
+      <h1 id="title-line"></h1>
     </div>
-
-    <p class="email">
-      <a href="mailto:info.roniva@gmail.com">info.roniva@gmail.com</a>
-    </p>
   </div>
 
   <script>
-    function pad(n){ return n.toString().padStart(2,"0"); }
-
-    function updateDigitalClock(){
-      const now = new Date();
-      const h = pad(now.getHours());
-      const m = pad(now.getMinutes());
-      const s = pad(now.getSeconds());
-      document.getElementById("digital-clock").textContent = `${h}:${m}:${s}`;
-    }
-
-    updateDigitalClock();
-    setInterval(updateDigitalClock, 1000);
+    /* ========== TYPEWRITER – SADECE ÜST CÜMLE ========== */
 
     const titleText = "Website im Aufbau";
-
     const titleEl = document.getElementById("title-line");
 
     const rootStyles = getComputedStyle(document.documentElement);
@@ -193,7 +90,7 @@
     const PAUSE_AFTER_ERASE= parseInt(rootStyles.getPropertyValue("--pause-after-erase")) || 600;
 
     let titleIndex = 0;
-    let phase = "typingTitle";
+    let phase = "typingTitle"; // typingTitle -> pauseAfterType -> erasingTitle -> pauseAfterErase
 
     function typeLoop(){
       if(phase === "typingTitle"){
