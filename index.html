@@ -15,14 +15,6 @@
       --overlay-height: 160px;      /* yükseklik (SABİT) */
       --overlay-offset-top: 500px;  /* sayfada yukarıdan uzaklık */
 
-      /* 🔧 DİJİTAL SAAT AYARLARI */
-      --clock-font-size: 28px;      /* saat yazı boyutu */
-      --clock-padding: 8px 14px;    /* saat iç boşluğu */
-      --clock-left: -300px;          /* overlay'e göre soldan pozisyon (px veya %) */
-      --clock-top: 50%;             /* overlay'e göre yukarıdan pozisyon (%) */
-      --clock-pulse-duration: 2.5s; /* nefes animasyonu süresi */
-      --clock-scale-max: 1.2;      /* parlama anında büyüme oranı (1.00 = büyüme yok) */
-
       /* 🔧 TYPEWRITER (YAZI) HIZLARI – milisaniye */
       --type-speed: 90;             /* harf yazma hızı (küçük = daha hızlı) */
       --erase-speed: 60;            /* harf silme hızı */
@@ -46,14 +38,13 @@
     }
 
     .overlay{
-      position: relative;                 /* saat için referans */
+      position: relative;
       background: rgba(0,0,0,0.55);
       border-radius: 18px;
       width: var(--overlay-width);
       height: var(--overlay-height);      /* 🔒 sabit yükseklik */
       margin-top: var(--overlay-offset-top);
 
-      /* içerik yerleşimi: üst blok + mail her zaman aynı yerde */
       padding: 20px 24px;
       display:flex;
       flex-direction:column;
@@ -61,17 +52,34 @@
       align-items:center;
     }
 
-    /* Yazı bloğu için sabit alan – yüksekliği değişmez */
+    /* Yazı bloğu için sabit alan – yükseklik değişmez */
     .text-block{
-      height: 70px;                       /* istersen arttır/azalt */
+      height: 80px;                       /* iki satır için alan – istersen değiştir */
       display:flex;
       flex-direction:column;
       justify-content:center;
       align-items:center;
     }
 
+    /* Her satır için sabit yükseklik; satırlar birbirine karışmaz */
+    .line-1,
+    .line-2{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+    }
+
+    .line-1{
+      height: 40px;   /* başlık satırı yüksekliği */
+    }
+
+    .line-2{
+      height: 30px;   /* alt satır yüksekliği */
+    }
+
     h1{
-      margin:0 0 8px;
+      margin:0;
     }
 
     p{
@@ -91,72 +99,20 @@
       text-decoration:underline;
     }
 
-    /* Dijital saatin overlay'e göre konumu – X ve Y senin elinde */
-    .clock-wrapper{
-      position:absolute;
-      top: var(--clock-top);
-      left: var(--clock-left);
-      transform: translateY(-50%);   /* sadece dikey ortalamak için */
-    }
-
-    /* 🔴 Dijital saat stili (kırmızı LED + nefes animasyonu) */
-    .digital-clock{
-      font-family: "Courier New", monospace;
-      font-size: var(--clock-font-size);
-      padding: var(--clock-padding);
-      color: #ff3030;
-      background: #050608;
-      border-radius: 7px;
-      letter-spacing: 3px;
-      display:inline-block;
-      min-width: 115px;
-      text-align:center;
-      box-shadow:
-        0 0 8px rgba(255, 48, 48, 0.65),
-        inset 0 0 6px rgba(0,0,0,0.9);
-      text-shadow:
-        0 0 6px rgba(255, 48, 48, 0.9),
-        0 0 14px rgba(255, 48, 48, 0.8);
-
-      animation: clockPulse var(--clock-pulse-duration) ease-in-out infinite;
-    }
-
-    @keyframes clockPulse{
-      0%{
-        box-shadow:
-          0 0 6px rgba(255, 48, 48, 0.5),
-          inset 0 0 4px rgba(0,0,0,0.9);
-        transform: scale(1);
-      }
-      50%{
-        box-shadow:
-          0 0 14px rgba(255, 48, 48, 0.9),
-          inset 0 0 6px rgba(0,0,0,0.9);
-        transform: scale(var(--clock-scale-max));
-      }
-      100%{
-        box-shadow:
-          0 0 6px rgba(255, 48, 48, 0.5),
-          inset 0 0 4px rgba(0,0,0,0.9);
-        transform: scale(1);
-      }
-    }
-
     footer{ display:none; }
   </style>
 </head>
 <body>
 
   <div class="overlay">
-    <!-- Saat: metinden bağımsız -->
-    <div class="clock-wrapper">
-      <span class="digital-clock" id="digital-clock">88:88:88</span>
-    </div>
-
     <!-- Yazılar için sabit yüksekliğe sahip blok -->
     <div class="text-block notranslate" translate="no">
-      <h1 id="title-line"></h1>
-      <p id="subtitle-line"></p>
+      <div class="line-1">
+        <h1 id="title-line"></h1>
+      </div>
+      <div class="line-2">
+        <p id="subtitle-line"></p>
+      </div>
     </div>
 
     <!-- E-posta satırı – her zaman en altta, 3. satır -->
@@ -166,20 +122,6 @@
   </div>
 
   <script>
-    /* ========== DİJİTAL SAAT ========== */
-    function pad(n){ return n.toString().padStart(2,"0"); }
-
-    function updateDigitalClock(){
-      const now = new Date();
-      const h = pad(now.getHours());
-      const m = pad(now.getMinutes());
-      const s = pad(now.getSeconds());
-      document.getElementById("digital-clock").textContent = `${h}:${m}:${s}`;
-    }
-
-    updateDigitalClock();
-    setInterval(updateDigitalClock, 1000);
-
     /* ========== TYPEWRITER METİN ========== */
 
     const titleText = "Website im Aufbau";
