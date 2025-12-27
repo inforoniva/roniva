@@ -9,9 +9,8 @@
 
   <style>
     :root{
-
-      /* 🔧 SADECE BUNU DEĞİŞTİR – HER ŞEY OTOMATİK KÜÇÜLÜR/BÜYÜR */
-      --base-scale: 0.9;   /* 1 = normal | 0.9 = %10 küçük | 1.1 = %10 büyük */
+      /* Tek tuşla ölçek: 1 = normal, 0.9 = %10 küçük, 1.1 = %10 büyük */
+      --base-scale: 0.9;
 
       /* KUTU */
       --overlay-width: calc(520px * var(--base-scale));
@@ -25,7 +24,7 @@
       --counter-number-size: calc(1.65rem * var(--base-scale));
       --counter-label-size: calc(0.65rem * var(--base-scale));
 
-      /* YAZI ANİMASYONU */
+      /* Yazı animasyonu */
       --type-speed: 90;
       --erase-speed: 90;
       --pause-after-type: 1200;
@@ -191,10 +190,11 @@
     typeLoop();
 
 
-    /* ====== 3 AY GERİYE SAYAN SAYAÇ ====== */
-    const now = new Date();
-    const target = new Date();
-    target.setMonth( target.getMonth() + 3 );
+    /* ====== 3 AY SONRA SABİT TARİHE GERİ SAYIM ====== */
+
+    // 💡 BURAYI kendi gerçek açılış tarihinle değiştir
+    // Örnek: 27 Mart 2026 saat 00:00
+    const target = new Date("2026-03-27T00:00:00");
 
     function updateCountdown(){
       const current = new Date();
