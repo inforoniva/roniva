@@ -9,10 +9,15 @@
 
   <style>
     :root{
-      --overlay-width: 450px;
-      --overlay-height: 100px;
+      /* 🔧 KUTU TAMAMEN SENDE */
+      --overlay-width: 450px;     /* kutu genişliği */
+      --overlay-height: 100px;    /* kutu yüksekliği */
       --overlay-offset-top: 560px;
 
+      /* 🔧 YAZI BOYUTU TAMAMEN SENDE */
+      --title-size: 1.65rem;
+
+      /* Yazı animasyonu */
       --type-speed: 90;
       --erase-speed: 60;
       --pause-after-type: 1200;
@@ -38,14 +43,17 @@
       position: relative;
       background: rgba(0,0,0,0.55);
       border-radius: 18px;
+
+      /* 🔽 kutu ölçüleri değişkenden geliyor */
       width: var(--overlay-width);
       height: var(--overlay-height);
+
       margin-top: var(--overlay-offset-top);
       padding: 10px 18px;
 
       display:flex;
-      justify-content:center;   /* dikey ortala */
-      align-items:center;       /* yatay ortala */
+      justify-content:center;
+      align-items:center;
     }
 
     .text-block{
@@ -56,10 +64,10 @@
       height:100%;
     }
 
-    /* 🔥 1.5x büyütüldü */
+    /* 🔽 yazı boyutu değişkenden geliyor */
     h1{
       margin:0;
-      font-size: 1.65rem;
+      font-size: var(--title-size);
       font-style: normal;
     }
 
